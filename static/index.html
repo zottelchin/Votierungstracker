@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Votierungstracker | zottelchin.de</title>
+  <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+  <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/fontawesome-all.css">
+  <script src="vue.js"></script>
+</head>
+
+<body>
+  <div id="wrapper" class="container">
+    <h1>Votierungstracker</h1>
+    <div id="app" class="row">
+
+      <div class="column">
+        <table>
+          <thead>
+            <tr>
+              <th v-for="key in gridColumns">
+                {{ key }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="entry in gridData">
+              <td v-for="key in gridColumnsShort">
+                {{entry[key]}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </div>
+
+  <script>
+
+
+    // bootstrap the demo
+    var demo = new Vue({
+      el: '#app',
+      data: {
+        gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', ''],
+        gridColumnsShort: ['task', 'points', 'maxPoints', ''],
+        gridData: [
+          { task: 'Chuck Norris', points: Infinity, maxPoints: 90 },
+          { task: 'Bruce Lee', points: 9000, maxPoints: 90 },
+          { task: 'Jackie Chan', points: 7000, maxPoints: 90 },
+          { task: 'Jet Li', points: 8000, maxPoints: 90 }
+        ],
+        maxPoints: 0,
+        points: 0,
+        task: "",
+      },
+      methods: {
+        addTask: function () {
+          this.gridData.push({ task: this.task, points: this.points, maxPoints: this.maxPoints })
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>
