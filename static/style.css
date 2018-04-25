@@ -24,6 +24,10 @@ body {
     td {
     background-color: #f9f9f9;
     }
+
+    td:last-child th:last-child {
+        padding-right: 15px;
+    }
     
     th, td {
     min-width: 120px;
@@ -67,4 +71,10 @@ body {
     h1 {
         text-align: center;
         margin-bottom: 45px;
+    }
+
+    .small {
+        min-width: 80px;
+        padding-right: 15px;
+        text-align: right;
     }

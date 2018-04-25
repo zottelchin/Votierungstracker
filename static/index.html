@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <title>Votierungstracker | zottelchin.de</title>
+  <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
   <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
-  <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/fontawesome-all.css">
   <script src="vue.js"></script>
 </head>
@@ -23,12 +23,26 @@
               <th v-for="key in gridColumns">
                 {{ key }}
               </th>
+              <th class="small"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="entry in gridData">
-              <td v-for="key in gridColumnsShort">
-                {{entry[key]}}
+            <tr v-for="(entry, index) in gridData">
+              <td >
+                {{ entry['task'] }}
+              </td>
+              <td>
+                {{ entry['points'] }}
+              </td>
+              <td>
+                {{ entry['maxPoints'] }}
+              </td>
+              <td>
+                {{ entry['pres'] }}
+              </td>
+              <td class="small">
+                <i class="fas fa-edit" @click="edit(entry)"></i>
+                <i class="fas fa-trash-alt" @click="deleteItem(index)"></i>
               </td>
             </tr>
           </tbody>
@@ -37,12 +51,15 @@
       <div class="column column-33">
           <fieldset>
             <label for="Aufgabe">Aufgabe</label>
-            <input id="Aufgabe" type="text" v-model="task">
+            <input id="Aufgabe" type="text" v-model="editData.task">
             <label for="punkte">Punkte</label>
-            <input id="punkte" type="number" v-model="points">
+            <input id="punkte" type="number" v-model="editData.points">
             <label for="maxPoints">m&ouml;gliche Punkte</label>
-            <input id="maxPoints" type="number" v-model="maxPoints">
-            <button class="button" type="button" @click="addTask()">Hinzuf&uuml;gen</button>
+            <input id="maxPoints" type="number" v-model="editData.maxPoints">
+            <label for="pres">Vortr&auml;ge</label>
+            <input id="pres" type="number" v-model="editData.pres">
+            <button class="button" type="button" @click="addTask()" v-if="isNew">Hinzuf&uuml;gen</button>
+            <button class="button" type="button" @click="saveEditTask()" v-else="isNew">&Auml;ndern beenden</button>
           </fieldset>
         </div>
     </div>
@@ -55,21 +72,35 @@
     var demo = new Vue({
       el: '#app',
       data: {
-        gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', ''],
-        gridColumnsShort: ['task', 'points', 'maxPoints', ''],
+        gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', 'Vorträge'],
+        gridColumnsShort: ['task', 'points', 'maxPoints', "pres"],
         gridData: [
-          { task: 'Chuck Norris', points: Infinity, maxPoints: 90 },
-          { task: 'Bruce Lee', points: 9000, maxPoints: 90 },
-          { task: 'Jackie Chan', points: 7000, maxPoints: 90 },
-          { task: 'Jet Li', points: 8000, maxPoints: 90 }
+          { id: 0, task: 'Chuck Norris', points: Infinity, maxPoints: 90, pres: 0 },
+          { id: 1, task: 'Bruce Lee', points: 9000, maxPoints: 90, pres: 0 },
+          { id: 2, task: 'Jackie Chan', points: 7000, maxPoints: 90, pres: 0 },
+          { id: 3, task: 'Jet Li', points: 8000, maxPoints: 90 }
         ],
-        maxPoints: 0,
-        points: 0,
-        task: "",
+        editData: { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 },
+        isNew: true,
+        
       },
       methods: {
         addTask: function () {
-          this.gridData.push({ task: this.task, points: this.points, maxPoints: this.maxPoints })
+          this.gridData.push({id: this.editData.id, task: this.editData.task, points: this.editData.points, maxPoints: this.editData.maxPoints, pres: this.editData.pres})
+          //TODO: im Backend hinzufügen
+        },
+        deleteItem: function(delId) {
+          this.gridData.splice(delId, 1)
+          //TODO: Im Backend löschen
+        },
+        edit: function(row){
+          this.isNew = false
+          this.editData = row
+          
+        },
+        saveEditTask:function(){
+          this.isNew = true
+          this.editData = { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 }
         }
       }
     })
