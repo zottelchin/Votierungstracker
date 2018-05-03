@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
   <link rel="stylesheet" href="/fontawesome-all.css">
   <script src="vue.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
+  <script src="//unpkg.com/vue-router"></script>
 </head>
 
 <body>
@@ -42,7 +44,24 @@
               </td>
               <td class="small">
                 <i class="fas fa-edit" @click="edit(entry)"></i>
-                <i class="fas fa-trash-alt" @click="deleteItem(index)"></i>
+                <i class="fas fa-trash-alt" @click="deleteItem(index, entry['id'])"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b>Gesamt</b>
+              </td>
+              <td>
+                <b>{{ gesPoints }}</b>
+              </td>
+              <td>
+                <b>{{ gesMaxPoints }}</b>
+              </td>
+              <td>
+                <b>{{ gesPres }}</b>
+              </td>
+              <td>
+                {{ gesPerc }}
               </td>
             </tr>
           </tbody>
@@ -59,50 +78,102 @@
             <label for="pres">Vortr&auml;ge</label>
             <input id="pres" type="number" v-model="editData.pres">
             <button class="button" type="button" @click="addTask()" v-if="isNew">Hinzuf&uuml;gen</button>
-            <button class="button" type="button" @click="saveEditTask()" v-else="isNew">&Auml;ndern beenden</button>
+            <button class="button" type="button" @click="saveEditTask()" v-else="isNew">&Auml;ndern hochladen</button>
           </fieldset>
         </div>
     </div>
   </div>
 
   <script>
-
+var router = new VueRouter({
+    mode: 'history',
+    routes: []
+});
 
     // bootstrap the demo
     var demo = new Vue({
+      router,
       el: '#app',
       data: {
         gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', 'Vorträge'],
         gridColumnsShort: ['task', 'points', 'maxPoints', "pres"],
         gridData: [
-          { id: 0, task: 'Chuck Norris', points: Infinity, maxPoints: 90, pres: 0 },
-          { id: 1, task: 'Bruce Lee', points: 9000, maxPoints: 90, pres: 0 },
-          { id: 2, task: 'Jackie Chan', points: 7000, maxPoints: 90, pres: 0 },
-          { id: 3, task: 'Jet Li', points: 8000, maxPoints: 90 }
+          { id: 0, task: 'Blatt 1', points: 4, maxPoints: 6, pres: 0 },
+          { id: 1, task: 'Blatt 2', points: 4, maxPoints: 6, pres: 2 },
+          { id: 2, task: 'Blatt 3', points: 6, maxPoints: 6, pres: 0 },
+          { id: 3, task: 'Blatt 4', points: 6, maxPoints: 6, pres: 1 }
         ],
         editData: { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 },
         isNew: true,
+        user: "",
+        clas: "",
+        
+        
+      },
+      created: function(){
+        this.user = this.$route.query.user
+        this.clas = this.$route.query.class
+        this.$http.get('/api/getVotes/' + this.user + '/' + this.clas).then(function(response) {
+                        this.gridData = response.data.items ? response.data.items : []
+                    })
         
       },
       methods: {
-        addTask: function () {
-          this.gridData.push({id: this.editData.id, task: this.editData.task, points: this.editData.points, maxPoints: this.editData.maxPoints, pres: this.editData.pres})
-          //TODO: im Backend hinzufügen
+        addTask: async function () {
+          var res = await this.$http.get('/api/addVotes/'  + this.user + '/' + this.clas + '/' + this.editData.task + '/' + this.editData.points + '/' + this.editData.maxPoints + '/' + this.editData.pres)
+          this.gridData.push({id: Number(res.created), task: this.editData.task, points: Number(this.editData.points), maxPoints: Number(this.editData.maxPoints), pres: Number(this.editData.pres)})
+          this.editData = { maxPoints: 0, points: 0, task: "", pres: 0}
+          
+
         },
-        deleteItem: function(delId) {
+        deleteItem: function(delId, id) {
           this.gridData.splice(delId, 1)
+          this.$http.get('/api/deleteVotes/' + id)
           //TODO: Im Backend löschen
         },
         edit: function(row){
           this.isNew = false
-          this.editData = row
+          this.editData.id = Number(row.id)
+          this.editData.task = row.task
+          this.editData.points = Number(row.points)
+          this.editData.maxPoints = Number(row.maxPoints)
+          this.editData.pres = Number(row.pres)
           
         },
         saveEditTask:function(){
+          //Upload changes
+          
           this.isNew = true
           this.editData = { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 }
         }
-      }
+      },
+      computed: {
+        gesPoints: function() {
+          res = 0
+          for (let index in this.gridData){
+            res += this.gridData[index]['points']
+          }
+          return res
+          },
+          gesMaxPoints: function() {
+          res = 0
+          for (let index in this.gridData){
+            res += this.gridData[index]['maxPoints']
+          }
+          return res
+          },
+          gesPres: function() {
+          res = 0
+          for (let index in this.gridData){
+            res += Number(this.gridData[index]['pres'])
+          }
+          return res
+          },
+          gesPerc: function() {
+            return this.gesPoints ? Math.round(this.gesPoints/this.gesMaxPoints * 1000)/10 + '%' : 0 + '%'
+          }
+        }
+      
     })
   </script>
 
