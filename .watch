@@ -1,0 +1,8 @@
+let cmd="", args=[], files=[], dash=false;
+process.argv.forEach(x => { if (dash && !cmd) cmd=x; else if (x === "--") dash = true; else (dash ? args : files).push(x) });
+
+let sem=0;
+function update() { if(sem) return sem=2; else sem=1; require("child_process").spawn(cmd, args, {stdio:"inherit"}).on("exit", (c) => {
+  if (sem > 1) { sem = 0; update(); } else sem = 0;
+})}
+require("./frontend/node_modules/chokidar").watch([...files]).on("all", (e) => { if (e === "change") update() });

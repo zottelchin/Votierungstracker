@@ -1,6 +1,6 @@
 # Votierungstracker
 
-Diese Webapp entwickel ich hauptsächlich für mich selber. Ich möchte gerne eine schnelle, minimale Möglichkeit meine Vortierungen/Vorträge und Punkte in Kursen zu speichern. 
+Diese Webapp entwickel ich hauptsächlich für mich selber. Ich möchte gerne eine schnelle, minimale Möglichkeit meine Vortierungen/Vorträge und Punkte in Kursen zu speichern.
 
 Die App soll über https://vote.zottelchin.de erreichbar sein.
 
@@ -26,7 +26,7 @@ In einer V2.0 wird Verschlüsselung und Sicherheit hinzugefügt
 
 Das Frontend: Vue.js und CSS Framework
 ^
-| JSON 
+| JSON
 v
 Backend Golang mit Gin als Webframework und SQLite für die Datenspeicherung
 

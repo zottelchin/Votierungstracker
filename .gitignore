@@ -1,0 +1,14 @@
+/vendor/
+/storage.db
+/Votierungstracker
+/frontend/dist/
+/frontend/node_modules/
+/frontend/npm-debug.log*
+
+.DS_Store
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

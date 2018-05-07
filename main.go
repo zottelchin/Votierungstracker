@@ -35,12 +35,9 @@ func main() {
 	migrate(db)
 	router := gin.Default()
 
-	router.StaticFile("/class", "static/index.html")
-	router.StaticFile("/", "static/landing.html")
-	router.StaticFile("/vue.js", "static/vue.js")
-	router.StaticFile("/style.css", "static/style.css")
-	router.StaticFile("/fontawesome-all.css", "static/css/fontawesome-all.css")
-	router.Static("/webfonts", "static/webfonts/")
+	router.StaticFile("/class", "frontend/dist/index.html")
+	router.StaticFile("/", "frontend/dist/index.html")
+	router.Static("/static/", "frontend/dist/static/")
 
 	router.GET("/api/getVotes/:user/:class", func(c *gin.Context) {
 		getUserTable(c, db)
