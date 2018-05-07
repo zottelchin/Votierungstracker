@@ -20,6 +20,15 @@ type DataCollection struct {
 	GridLines []GridLine `json:"items"`
 }
 
+type UserData struct {
+	UserLines []UserLine `json:"items"`
+}
+
+type UserLine struct {
+	CLASS string `json:"class"`
+	USER  string `json:"user"`
+}
+
 func main() {
 
 	db := initDB("storage.db")
@@ -27,6 +36,7 @@ func main() {
 	router := gin.Default()
 
 	router.StaticFile("/class", "static/index.html")
+	router.StaticFile("/", "static/landing.html")
 	router.StaticFile("/vue.js", "static/vue.js")
 	router.StaticFile("/style.css", "static/style.css")
 	router.StaticFile("/fontawesome-all.css", "static/css/fontawesome-all.css")
@@ -40,6 +50,9 @@ func main() {
 	})
 	router.GET("api/addVotes/:user/:class/:task/:points/:max/:pres", func(c *gin.Context) {
 		addRow(c, db)
+	})
+	router.GET("api/getUser/:user", func(c *gin.Context) {
+		getUser(c, db)
 	})
 
 	router.Run(":8900")
@@ -144,4 +157,29 @@ func deleteRow(c *gin.Context, db *sql.DB) {
 	if err == nil {
 		c.String(http.StatusOK, "Deleted")
 	}
+}
+
+func getUser(c *gin.Context, db *sql.DB) {
+	user := c.Param("user")
+	sql := "SELECT class, user FROM tasks WHERE user = '" + user + "' GROUP BY class;"
+	rows, err := db.Query(sql)
+	// Exit if the SQL doesn't work for some reason
+	if err != nil {
+		panic(err)
+	}
+	// make sure to cleanup when the program exits
+	defer rows.Close()
+
+	resp := UserData{}
+	for rows.Next() {
+		line := UserLine{}
+		err2 := rows.Scan(&line.CLASS, &line.USER)
+		// Exit if we get an error
+		if err2 != nil {
+			panic(err2)
+		}
+		resp.UserLines = append(resp.UserLines, line)
+	}
+
+	c.JSON(http.StatusOK, resp)
 }

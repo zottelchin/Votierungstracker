@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Votierungstracker | zottelchin.de</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <link rel="stylesheet" href="/fontawesome-all.css">
+    <script src="vue.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/vue-resource@1.5.0"></script>
+</head>
+
+<body>
+    <h1>Votierungstracker</h1>
+    <div id="app">
+        <label for="user"></label>
+        <input type="text" id="user" v-model="username">
+        <button @click="searchUser">Suchen</button>
+
+        <ul>
+            <li v-for="entry in userClasses">
+                <a :href=getLink(entry)>{{ entry.class }}</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                username: "",
+                userClasses: []
+            },
+            methods: {
+                searchUser: function () {
+                    this.$http.get('/api/getUser/' + this.username).then(function (response) {
+                        this.userClasses = response.data.items ? response.data.items : []
+                    })
+                    console.log("yaaa")
+                },
+                getLink: function (entry) {
+                    return "/class?user=" + entry.user + "&class=" + entry.class 
+                }
+            }
+        })
+    </script>
+
+</body>

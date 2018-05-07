@@ -15,7 +15,7 @@
 
 <body>
   <div id="wrapper" class="container">
-    <h1>Votierungstracker</h1>
+    <a href="/"><h1>Votierungstracker</h1></a>
     <div id="app" class="row">
 
       <div class="column">
@@ -97,12 +97,7 @@ var router = new VueRouter({
       data: {
         gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', 'Vorträge'],
         gridColumnsShort: ['task', 'points', 'maxPoints', "pres"],
-        gridData: [
-          { id: 0, task: 'Blatt 1', points: 4, maxPoints: 6, pres: 0 },
-          { id: 1, task: 'Blatt 2', points: 4, maxPoints: 6, pres: 2 },
-          { id: 2, task: 'Blatt 3', points: 6, maxPoints: 6, pres: 0 },
-          { id: 3, task: 'Blatt 4', points: 6, maxPoints: 6, pres: 1 }
-        ],
+        gridData: [],
         editData: { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 },
         isNew: true,
         user: "",
@@ -121,7 +116,7 @@ var router = new VueRouter({
       methods: {
         addTask: async function () {
           var res = await this.$http.get('/api/addVotes/'  + this.user + '/' + this.clas + '/' + this.editData.task + '/' + this.editData.points + '/' + this.editData.maxPoints + '/' + this.editData.pres)
-          this.gridData.push({id: Number(res.created), task: this.editData.task, points: Number(this.editData.points), maxPoints: Number(this.editData.maxPoints), pres: Number(this.editData.pres)})
+          this.gridData.push({id: Number(res.data.created), task: this.editData.task, points: Number(this.editData.points), maxPoints: Number(this.editData.maxPoints), pres: Number(this.editData.pres)})
           this.editData = { maxPoints: 0, points: 0, task: "", pres: 0}
           
 
