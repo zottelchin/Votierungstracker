@@ -2,7 +2,7 @@
   <div id="wrapper" class="container">
     <h1>Votierungstracker</h1>
 
-    <label for="user"></label>
+    <label for="user">Wähle einen User:</label>
     <input type="text" id="user" v-model="username">
     <button @click="searchUser">Suchen</button>
 
@@ -11,6 +11,9 @@
         <a :href=getLink(entry)>{{ entry.class }}</a>
       </li>
     </ul>
+    <label for="newCourse">Erstelle einen neuen Kurs</label>
+    <input type="text" id="newCourse" v-model="coursename">
+    <button @click="addCourse">Erstellen</button>
   </div>
 </template>
 
@@ -20,7 +23,8 @@
     data() {
       return {
         username: "",
-        userClasses: []
+        userClasses: [],
+        coursename: "",
       }
     },
     methods: {
@@ -32,6 +36,9 @@
       },
       getLink(entry) {
         return "/class?user=" + entry.user + "&class=" + entry.class
+      },
+      addCourse() {
+        window.location.href = "/class?user=" + this.username + "&class=" + this.coursename;
       }
     }
   }
