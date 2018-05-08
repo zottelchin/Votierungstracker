@@ -7,6 +7,7 @@ import Tasks from "@/components/Tasks"
 Vue.use(Router)
 
 export default new Router({
+  mode: "history",
   routes: [
     {
       path: "/",
