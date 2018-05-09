@@ -8,15 +8,23 @@ function fetchResponseHandler(res) {
   })
 }
 
+function send(method, path, headers, options) {
+  return fetch(endpoint + path, {
+    ...options,
+    method,
+    headers: { ...headers, ...(options ? options.headers : {}) }
+  }).then(fetchResponseHandler);
+}
+
 function sendWithBody(method, path, body, headers, options) {
   let type = "text/plain";
   if (body instanceof FormData) type = "multipart/form-data";
   else if (body instanceof URLSearchParams) type = "application/x-www-form-urlencoded";
   else if (body instanceof Object) { type = "application/json"; body = JSON.stringify(body); }
 
-  return fetch(path, {
+  return fetch(endpoint + path, {
     ...options,
-    method: method,
+    method,
     body,
     headers: { "Content-Type": type, ...headers, ...(options ? options.headers : {}) }
   }).then(fetchResponseHandler);
@@ -38,10 +46,7 @@ function setEndpoint(url) {
  * @returns {Promise<{body, response}>}
  */
 function get(path, headers, options) {
-  return fetch(path, {
-    ...options,
-    headers: { ...headers, ...(options ? options.headers : {}) }
-  }).then(fetchResponseHandler);
+  return send("GET", path, headers, options);
 }
 
 /**
@@ -76,11 +81,7 @@ function put(path, body, headers, options) {
  * @returns {Promise<{body, response}>}
  */
 function del(path, headers, options) {
-  return fetch(path, {
-    method: "delete",
-    ...options,
-    headers: { ...headers, ...(options ? options.headers : {}) }
-  }).then(fetchResponseHandler);
+  return send("DELETE", path, headers, options);
 }
 
 /**
@@ -91,11 +92,7 @@ function del(path, headers, options) {
  * @returns {Promise<Response>}
  */
 function head(path, headers, options) {
-  return fetch(path, {
-    method: "head",
-    ...options,
-    headers: { ...headers, ...(options ? options.headers : {}) }
-  });
+  return send("HEAD", path, headers, options);
 }
 
 /**
