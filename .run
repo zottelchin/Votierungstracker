@@ -5,11 +5,11 @@
 ##############
 
 frontend Builds the frontend code using Webpack and Stylus: |
-  cd frontend; [ -d node_modules ] || npm install
+  cd frontend
   npm run build
 
-frontend-dev Builds the frontend code and watches for file changes: |
-  cd frontend; [ -d node_modules ] || npm install
+frontend-watch Builds the frontend code and watches for file changes: |
+  cd frontend
   PORT=8999 npm run dev
 
 npm Updates npm packages: cd frontend && npm install
@@ -20,24 +20,22 @@ npm Updates npm packages: cd frontend && npm install
 
 backend Builds the backend code using Go: go build
 
-backend-dev Builds the backend code and watches for file changes: |
-  go build
-  node .watch '*.go' -- sh -c 'go build && kill `pkill -fx ./Votierungstracker` 2>/dev/null'
-
+backend-watch:
+  watch: |
+    *.go
+  watchIgnore: |
+    /frontend/
+    /vendor/
+  command: |
+    go build
+    ./Votierungstracker
 
 ################
 ## Everything ##
 ################
 
-run Builds and starts the application: |
-  run frontend-dev & pid1=$!
-  run backend-dev & pid2=$!
-  sigterm_happened=
-  trap "sigterm_happened=1; pkill -fx ./Votierungstracker || echo -n" SIGINT SIGTERM
-  while true; do
-    ./Votierungstracker || echo -n
-    if [ -n "$sigterm_happened" ]; then
-      kill -TERM $pid1 $pid2 2>/dev/null || echo -n
-      wait; exit 0
-    fi
-  done
+run Builds and starts the application:
+  simultaneous: true
+  command:
+  - run frontend-watch
+  - run backend-watch
