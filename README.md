@@ -7,7 +7,7 @@ Die App soll über https://vote.zottelchin.de erreichbar sein.
 ## Roadmap
 
 | User Story          | Beschreibung                                                                                                                                                       |
-| ==========          | ============                                                                                                                                                       |
+| ----------          | ------------                                                                                                                                                       |
 | U01 Server & Login  | Die Webapp kann über die URL aufgerufen werden, Accounts werden per Secret verwaltet.                                                                              |
 | U02 Veranstaltungen | Auf dem Startbildschirm sieht man die Veranstaltungen, die der jeweilige Nutzer angelegt hat.                                                                      |
 | U03 Votierungen     | Auf der Seite einer Veranstaltung sieht man den Namen der Veranstaltung, die Punkte sowie die möglichen Punkte. Einträge können hinzugefügt und bearbeitet werden. |
