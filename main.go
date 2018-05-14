@@ -31,7 +31,7 @@ type UserLine struct {
 
 func main() {
 
-	db := initDB("storage.db")
+	db := initDB("db/storage.db")
 	migrate(db)
 	router := gin.Default()
 
