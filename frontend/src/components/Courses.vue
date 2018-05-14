@@ -1,19 +1,22 @@
 <template>
   <div id="wrapper" class="container">
-    <h1>Votierungstracker</h1>
-
-    <label for="user">Wähle einen User:</label>
-    <input type="text" id="user" v-model="username">
-    <button @click="searchUser">Suchen</button>
-
-    <ul>
-      <li v-for="entry in userClasses">
-        <a :href=getLink(entry)>{{ entry.class }}</a>
+    <label>Meine Kurse:</label>
+    <ul class="course-list">
+      <small v-if="!userClasses || !userClasses.length">Du hast noch keine Kurse angelegt.</small>
+      <li v-else v-for="entry in userClasses">
+        <router-link class="button button-outline" :to="getLink(entry)">{{ entry.class }}</router-link>
       </li>
     </ul>
-    <label for="newCourse">Erstelle einen neuen Kurs</label>
-    <input type="text" id="newCourse" v-model="coursename">
-    <button @click="addCourse">Erstellen</button>
+    <label for="newCourse">Erstelle einen neuen Kurs:</label>
+    <div class="manual-row">
+      <div style="flex-grow: 1; margin-right: 5px">
+        <input type="text" id="newCourse" v-model="coursename">
+      </div>
+      <div>
+        <button class="slim-button" @click="addCourse">Erstellen</button>
+      </div>
+    </div>
+    <p><strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.</p>
   </div>
 </template>
 
@@ -21,8 +24,9 @@
   import api from "../api"
   export default {
     data() {
+      setTimeout(() => this.searchUser());
       return {
-        username: "",
+        username: this.$route.params.user,
         userClasses: [],
         coursename: "",
       }
@@ -35,10 +39,11 @@
         console.log("yaaa")
       },
       getLink(entry) {
-        return "/class?user=" + entry.user + "&class=" + entry.class
+        return "/" + encodeURIComponent(entry.user) + "/" + encodeURIComponent(entry.class);
       },
       addCourse() {
-        window.location.href = "/class?user=" + this.username + "&class=" + this.coursename;
+        console.log({ user: this.username, class: this.coursename });
+        this.$router.push(this.getLink({ user: this.username, class: this.coursename }));
       }
     }
   }

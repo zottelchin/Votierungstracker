@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1><img src="/static/logo.png"> Votierungstracker</h1>
     <router-view/>
   </div>
 </template>

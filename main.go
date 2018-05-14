@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"net/http"
+	"regexp"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -35,9 +37,10 @@ func main() {
 	migrate(db)
 	router := gin.Default()
 
-	router.StaticFile("/class", "frontend/dist/index.html")
 	router.StaticFile("/", "frontend/dist/index.html")
 	router.Static("/static/", "frontend/dist/static/")
+
+	router.Use(cors.Default())
 
 	router.GET("/api/getVotes/:user/:class", func(c *gin.Context) {
 		getUserTable(c, db)
@@ -45,14 +48,30 @@ func main() {
 	router.GET("/api/deleteVotes/:id", func(c *gin.Context) {
 		deleteRow(c, db)
 	})
-	router.GET("api/addVotes/:user/:class/:task/:points/:max/:pres", func(c *gin.Context) {
+	router.GET("/api/addVotes/:user/:class/:task/:points/:max/:pres", func(c *gin.Context) {
 		addRow(c, db)
 	})
-	router.GET("api/getUser/:user", func(c *gin.Context) {
+	router.GET("/api/getUser/:user", func(c *gin.Context) {
 		getUser(c, db)
 	})
 
+	router.Use(rewrite(router, `^/[a-zA-Z0-9-]+(?:/[^/]+)?`, "/"))
+
 	router.Run(":8900")
+}
+
+func rewrite(engine *gin.Engine, match string, target string) gin.HandlerFunc {
+	expr := regexp.MustCompile(match)
+	return func(c *gin.Context) {
+		if expr.MatchString(c.Request.URL.Path) {
+			c.Request.URL.Path = target
+			engine.ServeHTTP(c.Writer, c.Request)
+			c.Abort()
+			return
+		} else {
+			c.Next()
+		}
+	}
 }
 
 func initDB(filepath string) *sql.DB {

@@ -39,3 +39,8 @@ run Builds and starts the application:
   command:
   - run frontend-watch
   - run backend-watch
+
+launch Builds and starts the application in manual mode:
+- run frontend
+- run backend
+- ./Votierungstracker "$@"

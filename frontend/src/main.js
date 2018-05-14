@@ -5,7 +5,7 @@ import router from "./router"
 
 Vue.config.productionTip = false
 
-new Vue({
+window.app = new Vue({
   el: "#app",
   router,
   render: h => h(App)

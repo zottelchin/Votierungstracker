@@ -3,14 +3,13 @@ body {
     font-size: 14px;
     color: #444;
     }
-    
+
     table {
     border: 2px solid #42b983;
     border-radius: 3px;
     background-color: #fff;
-    max-width: 500px;
     }
-    
+
     th {
     background-color: #42b983;
     color: rgba(255,255,255,0.66);
@@ -20,28 +19,32 @@ body {
     -ms-user-select: none;
     user-select: none;
     }
-    
+
     td {
     background-color: #f9f9f9;
     }
 
-    td:last-child th:last-child {
+    td:last-child, th:last-child {
         padding-right: 15px;
+        width: 1px; min-width: 1px;
     }
-    
+    td:first-child, th:first-child {
+      padding-left: 15px;
+    }
+
     th, td {
     min-width: 120px;
     padding: 10px 20px;
     }
-    
+
     th.active {
     color: #fff;
     }
-    
+
     th.active .arrow {
     opacity: 1;
     }
-    
+
     .arrow {
     display: inline-block;
     vertical-align: middle;
@@ -50,13 +53,13 @@ body {
     margin-left: 5px;
     opacity: 0.66;
     }
-    
+
     .arrow.asc {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-bottom: 4px solid #fff;
     }
-    
+
     .arrow.dsc {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
@@ -67,14 +70,51 @@ body {
         max-width: 800px;
         margin: auto;
     }
-    
+
     h1 {
         text-align: center;
-        margin-bottom: 45px;
+        font-size: 4rem;
+        margin: 45px 0;
+        display: flex; justify-content: center; align-items: center;
     }
+    h1 img { margin-right: 0.3em; height: 1.3em; }
+
+    h2 { font-size: 2.6rem; }
 
     .small {
         min-width: 80px;
         padding-right: 15px;
         text-align: right;
     }
+    div[disabled] { opacity: 0.5; }
+    .back { padding-left: 1rem; font-weight: bold; margin-bottom: 1em; }
+    .submit-button { padding-left: 1.2rem; padding-right: 1.2rem; width: 11rem; }
+
+    .row .column.column-17 {
+      flex: 0 0 17%;
+      max-width: 17%;
+  }
+  @media screen and (min-width: 40rem) {
+    fieldset.row>.column { padding-left: 0; padding-right: 5px; }
+    fieldset.row>.column:first-child { padding-left: 1rem; }
+    fieldset.row>.column:last-child { padding-right: 1rem; }
+  }
+  @media screen and (max-width: 39.999rem) {
+    fieldset.row { display: grid; grid-template-columns: 1fr 1fr; grid-gap: 5px; }
+    fieldset.row>* { max-width: none !important; }
+    fieldset.row>.full { grid-column: span 2; }
+    fieldset.row>:last-child { text-align: right; }
+    fieldset.row>:last-child>label { display: none }
+  }
+
+  .manual-row { display: flex; }
+  .slim-button { padding-left: 1.5rem; padding-right: 1.5rem; }
+
+  .course-list {
+    list-style: none; margin: 0 0 2rem; padding: 0;
+  }
+  .course-list .button {
+    display: block;
+    text-align: left; padding-left: 1.5rem;
+    width: 100%;
+  }

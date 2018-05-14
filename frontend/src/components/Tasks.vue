@@ -1,71 +1,78 @@
 <template>
   <div id="wrapper" class="container">
-    <a href="/"><h1>Votierungstracker</h1></a>
-    <div class="row">
-      <div class="column">
-        <table>
-          <thead>
-            <tr>
-              <th v-for="key in gridColumns">
-                {{ key }}
-              </th>
-              <th class="small"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(entry, index) in gridData">
-              <td >
-                {{ entry['task'] }}
-              </td>
-              <td>
-                {{ entry['points'] }}
-              </td>
-              <td>
-                {{ entry['maxPoints'] }}
-              </td>
-              <td>
-                {{ entry['pres'] }}
-              </td>
-              <td class="small">
-                <i class="fas fa-edit" @click="edit(entry)"></i>
-                <i class="fas fa-trash-alt" @click="deleteItem(index, entry['id'])"></i>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b>Gesamt</b>
-              </td>
-              <td>
-                <b>{{ gesPoints }}</b>
-              </td>
-              <td>
-                <b>{{ gesMaxPoints }}</b>
-              </td>
-              <td>
-                <b>{{ gesPres }}</b>
-              </td>
-              <td>
-                {{ gesPerc }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="column column-33">
-        <fieldset>
-          <label for="Aufgabe">Aufgabe</label>
-          <input id="Aufgabe" type="text" v-model="editData.task">
-          <label for="punkte">Punkte</label>
-          <input id="punkte" type="number" v-model="editData.points">
-          <label for="maxPoints">m&ouml;gliche Punkte</label>
-          <input id="maxPoints" type="number" v-model="editData.maxPoints">
-          <label for="pres">Vortr&auml;ge</label>
-          <input id="pres" type="number" v-model="editData.pres">
-          <button class="button" type="button" @click="addTask()" v-if="isNew">Hinzuf&uuml;gen</button>
-          <button class="button" type="button" @click="saveEditTask()" v-else>&Auml;ndern hochladen</button>
-        </fieldset>
-      </div>
+    <div class="back">
+      <router-link :to="'/'+encodeURIComponent(user)"><i class="fa fa-chevron-left"></i> Zurück zu meinen Kursen</router-link>
     </div>
+    <table class="tasks">
+      <thead>
+        <tr>
+          <th v-for="key in gridColumns">
+            {{ key }}
+          </th>
+          <th class="small"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(entry, index) in gridData">
+          <td >
+            {{ entry['task'] }}
+          </td>
+          <td>
+            {{ entry['points'] }}
+          </td>
+          <td>
+            {{ entry['maxPoints'] }}
+          </td>
+          <td>
+            {{ entry['pres'] }}
+          </td>
+          <td class="small">
+            <i class="fas fa-edit" @click="edit(entry)"></i>
+            <i class="fas fa-trash-alt" @click="deleteItem(index, entry['id'])"></i>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>Gesamt</b>
+          </td>
+          <td>
+            <b>{{ gesPoints }}</b>
+          </td>
+          <td>
+            <b>{{ gesMaxPoints }}</b>
+          </td>
+          <td>
+            <b>{{ gesPres }}</b>
+          </td>
+          <td>
+            {{ gesPerc }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <fieldset class="row">
+      <div class="column full" style="flex-grow: 2">
+        <label for="Aufgabe">Aufgabe</label>
+        <input id="Aufgabe" type="text" v-model="editData.task">
+      </div>
+      <div class="column column-17">
+        <label for="punkte">Punkte</label>
+        <input id="punkte" type="number" v-model="editData.points">
+      </div>
+      <div class="column column-17">
+        <label for="maxPoints">max.&nbsp;Punkte</label>
+        <input id="maxPoints" type="number" v-model="editData.maxPoints">
+      </div>
+      <div class="column column-17 full">
+        <label for="pres">Vortr&auml;ge</label>
+        <input id="pres" type="number" v-model="editData.pres">
+      </div>
+      <div class="column full" style="flex: 0 0 11rem">
+        <label>&nbsp;</label>
+        <button class="button submit-button" type="button" @click="addTask()" v-if="isNew">Hinzufügen</button>
+        <button class="button submit-button" type="button" @click="saveEditTask()" v-else>Speichern</button>
+      </div>
+    </fieldset>
   </div>
 </template>
 
@@ -74,19 +81,18 @@
   export default {
     data() {
       return {
-          gridColumns: ['Aufgabe', 'Punkte', 'mögliche Punkte', 'Vorträge'],
+          gridColumns: ['Aufgabe', 'Punkte', 'maximale Punkte', 'Vorträge'],
           gridColumnsShort: ['task', 'points', 'maxPoints', "pres"],
           gridData: [],
           editData: { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 },
           isNew: true,
-          user: "",
-          clas: "",
+          user: this.$route.params.user,
+          clas: this.$route.params.class,
       }
     },
     created() {
-      this.user = this.$route.query.user
-      this.clas = this.$route.query.class
       api.get('/getVotes/' + this.user + '/' + this.clas).then(res => {
+        console.log(res.body)
         this.gridData = res.body.items ? res.body.items : []
       })
 
