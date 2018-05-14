@@ -4,6 +4,7 @@
 /frontend/dist/
 /frontend/node_modules/
 /frontend/npm-debug.log*
+/db/*
 
 .DS_Store
 .idea
