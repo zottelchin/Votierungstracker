@@ -16,7 +16,7 @@ pipeline:
     - npm run build
   publish:
     image: plugins/docker
-    repo: momar/votierungstracker
+    repo: zottelchin/votierungstracker
     tags: latest
     dockerfile: Dockerfile-CI
     secrets: [ docker_username, docker_password ]

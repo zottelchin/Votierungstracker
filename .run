@@ -38,9 +38,25 @@ run Builds and starts the application:
   simultaneous: true
   command:
   - run frontend-watch
-  - run backend-watch
+  - cd frontend && npm run build
 
-launch Builds and starts the application in manual mode:
-- run frontend
-- run backend
-- ./Votierungstracker "$@"
+# TODO: Fix run crashing with "[signal: terminated]"
+build Builds frontend and backend:
+  simultaneous: true
+  command:
+  - run backend
+  - run frontend
+
+manual Builds and starts the application in manual mode:
+  watch: |
+    *.go
+    *.js
+    *.html
+    /frontend/static/
+  watchIgnore: |
+    /vendor/
+    /frontend/dist/
+    /frontend/node_modules/
+  command:
+  - run build
+  - ./Votierungstracker "$@"
