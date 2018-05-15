@@ -1,0 +1,14 @@
+# This Dockerfile only adds already built files to a container.
+# It's intended for use with a CI that already builds backend and frontend itself.
+
+FROM scratch
+
+COPY Votierungstracker /Votierungstracker
+COPY frontend/dist /frontend/dist
+
+WORKDIR /
+ENV GIN_MODE=release
+VOLUME /db
+EXPOSE 8900
+
+ENTRYPOINT [ "/Votierungstracker" ]
