@@ -118,3 +118,11 @@ body {
     text-align: left; padding-left: 1.5rem;
     width: 100%;
   }
+
+  .clickable-icon {
+    cursor: pointer;
+    color: #9b4dca;
+  }
+  .clickable-icon:hover, .clickable-icon:focus {
+    color: #606c76;
+  }

@@ -27,8 +27,8 @@
             {{ entry['pres'] }}
           </td>
           <td class="small">
-            <i class="fas fa-edit" @click="edit(entry)"></i>
-            <i class="fas fa-trash-alt" @click="deleteItem(index, entry['id'])"></i>
+            <i class="fas fa-edit clickable-icon" @click="edit(entry)" style="margin-right: 5px"></i
+            ><i class="fas fa-trash-alt clickable-icon" @click="deleteItem(index, entry['id'])"></i>
           </td>
         </tr>
         <tr>
