@@ -39,3 +39,13 @@ docker run --restart always -d -v "~/.votierungstracker:/db" -p 1234:8900 zottel
 6. Backend-Dependencies installieren: `dep ensure`
 7. Programm bauen, starten und bei Dateiänderungen automatisch aktualisieren: `run` (aktuelles Frontend ist auf [::]:8999 verfügbar, Backend auf [::]:8900)
    Alternativ: manuell bauen und starten (aktualisiert sich auch bei Dateiänderungen, braucht aber länger bei jedem Build): `run manual`
+
+## Dockercontainer
+
+Um das Docker-Image lokal zu erstellen, sind folgende Schritte notwendig
+
+1. Benötigte Software: [Docker](https://www.docker.com/get-docker)
+2. Repository clonen: `git clone github.com/zottelchin/Votierungstracker`
+3. Image erstellen lassen: `docker build -t zottelchin/votierungstracker .`
+4. Container starten: `docker run --restart always -d -v "~/.votierungstracker:/db" -p 1234:8900 zottelchin/votierungstracker`
+5. Im Browser ist der Votierungstracker jetzt unter [localhost:8900](http://localhost:1234) erreichbar
