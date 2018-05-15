@@ -19,4 +19,4 @@ pipeline:
     repo: momar/votierungstracker
     tags: latest
     dockerfile: Dockerfile-CI
-    # TODO: How to manage secrets? I can't just put them into the Git repository...
+    secrets: [ docker_username, docker_password ]
