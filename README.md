@@ -4,6 +4,7 @@ Diese Webapp entwickel ich hauptsächlich für mich selber. Ich möchte gerne ei
 
 Die App soll über https://vote.zottelchin.de erreichbar sein.
 
+
 ## Roadmap
 
 | User Story          | Beschreibung                                                                                                                                                       |
