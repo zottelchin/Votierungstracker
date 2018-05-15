@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -39,8 +38,6 @@ func main() {
 
 	router.StaticFile("/", "frontend/dist/index.html")
 	router.Static("/static/", "frontend/dist/static/")
-
-	router.Use(cors.Default())
 
 	router.GET("/api/getVotes/:user/:class", func(c *gin.Context) {
 		getUserTable(c, db)
