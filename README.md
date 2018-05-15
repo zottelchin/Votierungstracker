@@ -48,4 +48,4 @@ Um das Docker-Image lokal zu erstellen, sind folgende Schritte notwendig
 2. Repository clonen: `git clone github.com/zottelchin/Votierungstracker`
 3. Image erstellen lassen: `docker build -t zottelchin/votierungstracker .`
 4. Container starten: `docker run --restart always -d -v "~/.votierungstracker:/db" -p 1234:8900 zottelchin/votierungstracker`
-5. Im Browser ist der Votierungstracker jetzt unter [localhost:8900](http://localhost:1234) erreichbar
+5. Im Browser ist der Votierungstracker jetzt unter [localhost:1234](http://localhost:1234) erreichbar
