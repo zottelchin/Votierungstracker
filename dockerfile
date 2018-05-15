@@ -17,11 +17,11 @@ COPY frontend/ /frontend/
 RUN npm build
 
 #final build 
-FROM alpine
-RUN mkdir -p /app
+FROM ubuntu:18.04
+RUN mkdir -p /app/db
 WORKDIR /app/
 COPY --from=backend-build-env /go/src/github.com/zottelchin/Votierungstracker/server /app/
 RUN mkdir -p frontend/dist
 COPY --from=frontend-build-env /frontend/dist/ frontend/dist/
 EXPOSE 8900
-CMD server
+ENTRYPOINT ./server
