@@ -1,6 +1,6 @@
 # Votierungstracker
 
-![](https://ci.mo-mar.de/api/badges/zottelchin/Votierungstracker/status.svg)
+[![](https://ci.mo-mar.de/api/badges/zottelchin/Votierungstracker/status.svg)](https://ci.mo-mar.de/zottelchin/Votierungstracker)
 
 Diese Webapp entwickel ich hauptsächlich für mich selber. Ich möchte gerne eine schnelle, minimale Möglichkeit meine Vortierungen/Vorträge und Punkte in Kursen zu speichern.
 
