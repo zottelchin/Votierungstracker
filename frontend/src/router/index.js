@@ -4,6 +4,7 @@ import Router from "vue-router"
 import Users from "@/components/Users"
 import Courses from "@/components/Courses"
 import Tasks from "@/components/Tasks"
+import Impressum from "@/components/Impressum"
 
 Vue.use(Router)
 
@@ -14,6 +15,11 @@ export default new Router({
       path: "/",
       name: "Users",
       component: Users
+    },
+    {
+      path: "/impressum",
+      name: "Impressum",
+      component: Impressum
     },
     {
       path: "/:user",
