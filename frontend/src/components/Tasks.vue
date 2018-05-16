@@ -119,8 +119,10 @@
         this.editData.pres = Number(row.pres)
 
       },
-      saveEditTask:function(){
+      saveEditTask: async function() {
         //Upload changes
+        var res = await api.get('/editVotes/' + this.user + '/' + this.clas + '/' + this.editData.id + '/' + this.editData.task + '/' + this.editData.points + '/' + this.editData.maxPoints + '/' + this.editData.pres)
+        this.gridData.forEach((v, i, a) => { if (v.id == this.editData.id) a.splice(i, 1, this.editData); })
 
         this.isNew = true
         this.editData = { maxPoints: 0, points: 0, task: "", pres: 0, id: 0 }
@@ -130,7 +132,7 @@
       gesPoints: function() {
         let res = 0
         for (let index in this.gridData){
-          res += this.gridData[index]['points']
+          res += parseInt(this.gridData[index]['points'])
         }
         return res
       },

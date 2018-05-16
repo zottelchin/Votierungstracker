@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -36,6 +38,12 @@ func main() {
 	migrate(db)
 	router := gin.Default()
 
+	if gin.Mode() != "release" {
+		config := cors.DefaultConfig()
+		config.AllowOrigins = []string{"http://localhost:8999", "http://127.0.0.1:8999", "http://[::]:8999", "http://[::1]:8999"}
+		router.Use(cors.New(config))
+	}
+
 	router.StaticFile("/", "frontend/dist/index.html")
 	router.Static("/static/", "frontend/dist/static/")
 
@@ -48,11 +56,17 @@ func main() {
 	router.GET("/api/addVotes/:user/:class/:task/:points/:max/:pres", func(c *gin.Context) {
 		addRow(c, db)
 	})
+	router.GET("/api/editVotes/:user/:class/:id/:task/:points/:max/:pres", func(c *gin.Context) {
+		updateRow(c, db)
+	})
 	router.GET("/api/getUser/:user", func(c *gin.Context) {
 		getUser(c, db)
 	})
 
-	router.Use(rewrite(router, `^/[a-zA-Z0-9-]+(?:/[^/]+)?`, "/"))
+	router.Group("/api", func(c *gin.Context) {
+		c.String(404, "API endpoint not found.\n")
+	})
+	router.Use(rewrite(router, `^/[a-zA-Z0-9-]+(?:/[^/]+)?$`, "/"))
 
 	router.Run(":8900")
 }
@@ -150,6 +164,27 @@ func addRow(c *gin.Context, db *sql.DB) {
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{
 			"created": id,
+		})
+	}
+
+}
+
+func updateRow(c *gin.Context, db *sql.DB) {
+	sql := "UPDATE tasks SET name = ?, points = ?, maxPoints = ?, presentations = ? WHERE user = ? AND class = ? AND id = ?"
+
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+	result, err := stmt.Exec(c.Param("task"), c.Param("points"), c.Param("max"), c.Param("pres"), c.Param("user"), c.Param("class"), c.Param("id"))
+	if err != nil {
+		panic(err)
+	}
+	id, err := result.RowsAffected()
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{
+			"updated": id,
 		})
 	}
 
