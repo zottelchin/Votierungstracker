@@ -42,8 +42,18 @@ export default {
 </script>
 
 <style scoped>
+@media screen and (max-width: 40rem) {
+  .footer {
+    position: relative;
+    margin-top: 2rem;  
+  }
+}
+@media screen and (min-width: 40.001rem) {
+  .footer {
+position: fixed;
+  }
+}
 .footer {
-  position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
