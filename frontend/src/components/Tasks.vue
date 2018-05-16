@@ -53,19 +53,19 @@
     <fieldset class="row">
       <div class="column full" style="flex-grow: 2">
         <label for="Aufgabe">Aufgabe</label>
-        <input id="Aufgabe" type="text" v-model="editData.task">
+        <input id="Aufgabe" type="text" v-model="editData.task" v-on:keyup.enter="setFocus('punkte')">
       </div>
       <div class="column column-17">
         <label for="punkte">Punkte</label>
-        <input id="punkte" type="number" v-model="editData.points">
+        <input id="punkte" type="number" v-model="editData.points" v-on:keyup.enter="setFocus('maxPoints')">
       </div>
       <div class="column column-17">
         <label for="maxPoints">max.&nbsp;Punkte</label>
-        <input id="maxPoints" type="number" v-model="editData.maxPoints">
+        <input id="maxPoints" type="number" v-model="editData.maxPoints" v-on:keyup.enter="enter()">
       </div>
       <div class="column column-17 full">
         <label for="pres">Vortr&auml;ge</label>
-        <input id="pres" type="number" v-model="editData.pres">
+        <input id="pres" type="number" v-model="editData.pres" v-on:keyup.enter="enter()">
       </div>
       <div class="column full" style="flex: 0 0 11rem">
         <label>&nbsp;</label>
@@ -104,6 +104,16 @@
         this.editData = { maxPoints: 0, points: 0, task: "", pres: 0}
 
 
+      },
+      enter: function(){
+        if (this.isNew){
+          this.addTask()
+        }else{
+          this.saveEditTask()
+        }
+      },
+      setFocus: function(id){
+        document.getElementById(id).focus()
       },
       deleteItem: function(delId, id) {
         this.gridData.splice(delId, 1)
