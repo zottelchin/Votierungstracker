@@ -139,14 +139,14 @@
       gesMaxPoints: function() {
         let res = 0
         for (let index in this.gridData){
-          res += this.gridData[index]['maxPoints']
+          res += parseInt(this.gridData[index]['maxPoints'])
         }
         return res
       },
         gesPres: function() {
         let res = 0
         for (let index in this.gridData){
-          res += Number(this.gridData[index]['pres'])
+          res += parseInt(this.gridData[index]['pres'])
         }
         return res
       },
