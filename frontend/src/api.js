@@ -45,7 +45,7 @@ function setEndpoint(url) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<{body, response}>}
  */
-function get(path, headers, options) {
+function GET(path, headers, options) {
   return send("GET", path, headers, options);
 }
 
@@ -57,7 +57,7 @@ function get(path, headers, options) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<{body, response}>}
  */
-function post(path, body, headers, options) {
+function POST(path, body, headers, options) {
   return sendWithBody("POST", path, body, headers, options);
 }
 
@@ -69,7 +69,7 @@ function post(path, body, headers, options) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<{body, response}>}
  */
-function put(path, body, headers, options) {
+function PUT(path, body, headers, options) {
   return sendWithBody("PUT", path, body, headers, options);
 }
 
@@ -80,7 +80,7 @@ function put(path, body, headers, options) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<{body, response}>}
  */
-function del(path, headers, options) {
+function DELETE(path, headers, options) {
   return send("DELETE", path, headers, options);
 }
 
@@ -91,7 +91,7 @@ function del(path, headers, options) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<Response>}
  */
-function head(path, headers, options) {
+function HEAD(path, headers, options) {
   return send("HEAD", path, headers, options);
 }
 
@@ -103,16 +103,16 @@ function head(path, headers, options) {
  * @param {object} options Other options to forward to fetch()
  * @returns {Promise<{body, response}>}
  */
-function patch(path, body, headers, options) {
+function PATCH(path, body, headers, options) {
   return sendWithBody("PATCH", path, body, headers, options);
 }
 
 export default {
   setEndpoint,
-  get,
-  post,
-  put,
-  del,
-  head,
-  patch
+  GET,
+  POST,
+  PUT,
+  DELETE,
+  HEAD,
+  PATCH
 }
