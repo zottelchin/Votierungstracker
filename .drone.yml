@@ -20,3 +20,5 @@ pipeline:
     tags: latest
     dockerfile: Dockerfile-CI
     secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
