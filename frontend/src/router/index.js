@@ -22,12 +22,12 @@ export default new Router({
       component: Impressum
     },
     {
-      path: "/:user",
+      path: "/:account",
       name: "Courses",
       component: Courses
     },
     {
-      path: "/:user/:class",
+      path: "/:account/:course",
       name: "Tasks",
       component: Tasks
     }

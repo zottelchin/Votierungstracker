@@ -2,9 +2,9 @@
   <div id="wrapper" class="container">
     <label>Meine Kurse:</label>
     <ul class="course-list">
-      <small v-if="!userClasses || !userClasses.length">Du hast noch keine Kurse angelegt.</small>
-      <li v-else v-for="entry in userClasses">
-        <router-link class="button button-outline" :to="getLink(entry)">{{ entry.class }}</router-link>
+      <small v-if="!courses || !courses.length">Du hast noch keine Kurse angelegt.</small>
+      <li v-else v-for="course in courses">
+        <router-link class="button button-outline" :to="getLink(course)">{{ course }}</router-link>
       </li>
     </ul>
     <label for="newCourse">Erstelle einen neuen Kurs:</label>
@@ -24,26 +24,24 @@
   import api from "../api"
   export default {
     data() {
-      setTimeout(() => this.searchUser());
+      setTimeout(() => this.list());
       return {
-        username: this.$route.params.user,
-        userClasses: [],
+        account: this.$route.params.account,
+        courses: [],
         coursename: "",
       }
     },
     methods: {
-      searchUser() {
-        api.get("/getUser/" + this.username).then(res => {
-          this.userClasses = res.body.items ? res.body.items : []
+      list() {
+        api.GET("/courses/" + encodeURIComponent(this.account)).then(res => {
+          this.courses = res.body || []
         })
-        console.log("yaaa")
       },
-      getLink(entry) {
-        return "/" + encodeURIComponent(entry.user) + "/" + encodeURIComponent(entry.class);
+      getLink(course) {
+        return "/" + encodeURIComponent(this.account) + "/" + encodeURIComponent(course);
       },
       addCourse() {
-        console.log({ user: this.username, class: this.coursename });
-        this.$router.push(this.getLink({ user: this.username, class: this.coursename }));
+        this.$router.push(this.getLink(this.coursename));
       }
     }
   }
