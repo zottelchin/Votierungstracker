@@ -38,9 +38,8 @@ run Builds and starts the application:
   simultaneous: true
   command:
   - run frontend-watch
-  - cd frontend && npm run build
+  - run backend-watch
 
-# TODO: Fix run crashing with "[signal: terminated]"
 build Builds frontend and backend:
   simultaneous: true
   command:
