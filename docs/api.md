@@ -62,7 +62,7 @@ Get the courses of a specified user.
 ### Response body
 ```
 [
-  { "account": "example", "course": "example" },
+  "example",
   …
 ]
 ```
