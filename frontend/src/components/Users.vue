@@ -11,7 +11,7 @@
       <div class="column">
         <h2>Bestehenden Account verwenden</h2>
         <label for="user">Dein Account-Key:</label>
-        <input type="text" id="user" v-model.trim="account">
+        <input type="text" id="user" v-model.trim="account" v-on:keyup.enter="login(account)">
         <button style="width: 100%" @click="login(account)">Account verwenden</button>
       </div>
     </div>

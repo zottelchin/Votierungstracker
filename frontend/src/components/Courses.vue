@@ -10,7 +10,7 @@
     <label for="newCourse">Erstelle einen neuen Kurs:</label>
     <div class="manual-row">
       <div style="flex-grow: 1; margin-right: 5px">
-        <input type="text" id="newCourse" v-model="coursename">
+        <input type="text" id="newCourse" v-model="coursename" v-on:keyup.enter="addCourse">
       </div>
       <div>
         <button class="slim-button" @click="addCourse">Erstellen</button>

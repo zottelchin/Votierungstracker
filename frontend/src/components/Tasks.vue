@@ -53,19 +53,19 @@
     <fieldset class="row">
       <div class="column full" style="flex-grow: 2">
         <label for="Aufgabe">Aufgabe</label>
-        <input id="Aufgabe" type="text" v-model="editData.name">
+        <input id="Aufgabe" type="text" v-model="editData.name" v-on:keyup.enter="setFocus('punkte')">
       </div>
       <div class="column column-17">
         <label for="punkte">Punkte</label>
-        <input id="punkte" type="number" v-model.number="editData.points">
+        <input id="punkte" type="number" v-model.number="editData.points" v-on:keyup.enter="setFocus('maxPoints')">
       </div>
       <div class="column column-17">
         <label for="maxPoints">max.&nbsp;Punkte</label>
-        <input id="maxPoints" type="number" v-model.number="editData.maxPoints">
+        <input id="maxPoints" type="number" v-model.number="editData.maxPoints" v-on:keyup.enter="enter()">
       </div>
       <div class="column column-17 full">
         <label for="pres">Vortr&auml;ge</label>
-        <input id="pres" type="number" v-model.number="editData.presentations">
+        <input id="pres" type="number" v-model.number="editData.presentations" v-on:keyup.enter="enter()">
       </div>
       <div class="column full" style="flex: 0 0 11rem">
         <label>&nbsp;</label>
@@ -100,6 +100,16 @@
         var res = await api.POST('/tasks/' + encodeURIComponent(this.account) + '/' + encodeURIComponent(this.course), this.editData)
         this.gridData.push({ ...this.editData, id: res.body.created })
         this.editData = { maxPoints: 0, points: 0, name: "", presentations: 0 }
+      },
+      enter: function(){
+        if (this.isNew){
+          this.addTask()
+        }else{
+          this.saveEditTask()
+        }
+      },
+      setFocus: function(id){
+        document.getElementById(id).focus()
       },
       deleteItem: function(delId, id) {
         this.gridData.splice(delId, 1)
