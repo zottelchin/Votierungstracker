@@ -33,9 +33,27 @@ body {
     }
 
     th, td {
-    min-width: 120px;
+    /*min-width: 120px;*/
     padding: 10px 20px;
     }
+    th { white-space: nowrap; }
+    th:first-child { width: 100%; }
+    td:not(:first-child) { text-align: right; }
+    @media screen and (max-width: 40rem) {
+      th, td { padding: 8px 10px; }
+    }
+    .formatted-points {
+      display: flex;
+      justify-content: center;
+    }
+    .formatted-points>:first-child, .formatted-points>:last-child {
+      flex: 0 0 45%;
+    }
+    .formatted-points>:nth-child(2) {
+      margin: 0 0.3rem;
+    }
+    .formatted-points>:last-child { text-align: left; }
+    .formatted-points>:not(:first-child) { opacity: 0.7; }
 
     th.active {
     color: #fff;

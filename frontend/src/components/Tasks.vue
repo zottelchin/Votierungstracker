@@ -17,13 +17,10 @@
           <td >
             {{ entry['name'] }}
           </td>
-          <td>
-            {{ entry['points'] }}
+          <td class="formatted-points">
+            <span>{{ entry['points'] }}</span><span>/</span><span>{{ entry['maxPoints'] }}</span>
           </td>
-          <td>
-            {{ entry['maxPoints'] }}
-          </td>
-          <td>
+          <td style="text-align: center">
             {{ entry['presentations'] }}
           </td>
           <td class="small">
@@ -35,13 +32,10 @@
           <td>
             <b>Gesamt</b>
           </td>
-          <td>
-            <b>{{ gesPoints }}</b>
+          <td class="formatted-points">
+            <b>{{ gesPoints }}</b><span>/</span><b>{{ gesMaxPoints }}</b>
           </td>
-          <td>
-            <b>{{ gesMaxPoints }}</b>
-          </td>
-          <td>
+          <td style="text-align: center">
             <b>{{ gesPres }}</b>
           </td>
           <td>
@@ -81,7 +75,7 @@
   export default {
     data() {
       return {
-          gridColumns: ['Aufgabe', 'Punkte', 'maximale Punkte', 'Vorträge'],
+          gridColumns: ['Aufgabe', 'Punkte', 'Vorträge'],
           gridColumnsShort: ['name', 'points', 'maxPoints', "presentations"],
           gridData: [],
           editData: { maxPoints: 0, points: 0, name: "", presentations: 0, id: 0 },
