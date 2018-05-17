@@ -1,7 +1,12 @@
 <template>
   <div id="wrapper" class="container">
     <div class="back">
+      <div class="course">
+        <span><!--aktueller Kurs:--> <b>{{ course }}</b></span>
+      </div>
       <router-link :to="'/'+encodeURIComponent(account)"><i class="fa fa-chevron-left"></i> Zurück zu meinen Kursen</router-link>
+      <i class="fas fa-cog right"></i>
+      
     </div>
     <table class="tasks">
       <thead>
@@ -150,4 +155,21 @@
     }
   }
 </script>
+
+<style scoped>
+.right {
+  position: absolute;
+  right: 3rem;
+  margin-top: 4px;
+}
+.course {
+  width: 100%;
+  font-weight: normal;
+  font-size: 15pt;
+  padding-left: 13px;
+  display: flex;
+  justify-content: center;
+  
+}
+</style>
 
