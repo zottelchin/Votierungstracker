@@ -6,8 +6,11 @@
       </div>
       <router-link :to="'/'+encodeURIComponent(account)"><i class="fa fa-chevron-left"></i> Zurück zu meinen Kursen</router-link>
       <i class="fas fa-cog right" @click="settings = !settings"></i>
+
+
       <transition name="grow">
         <div v-show="settings" class="container settings">
+          
           <div class="row">
             <h3>Einstellungen</h3>
           </div>
@@ -20,23 +23,30 @@
                 <span>Punkte</span>
           </div>
           <div class="row">
+
               <div v-show="!showPoints">
-              <label for="Prozent" style="font-weight: normal; display: inline;">mindestens zu erreichende Prozent</label>
-              <input id="Prozent" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100"  v-model="percent">
+                <label for="Prozent" style="font-weight: normal; display: inline;">mindestens zu erreichende Prozent: </label>
+                <input id="Prozent" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100"  v-model="percent">
               </div>
               <div v-show="showPoints">
-                <label for="zuErreichen" style="font-weight: normal; display: inline;">mindestens zu erreichende Punkte</label>
-              <input id="zuErreichen" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="zuErreichen">
-              <label for="von" style="font-weight: normal; display: inline;">von</label>
-              <input id="von" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="von">
-              
+                <label for="zuErreichen" style="font-weight: normal; display: inline;">mindestens zu erreichende Punkte: </label>
+                <input id="zuErreichen" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="zuErreichen">
+                <label for="von" style="font-weight: normal; display: inline;">/</label>
+                <input id="von" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="von"><br>
+                <small >Achtung: Die Punkte werden für das Backend und die Validierung in Prozent umgerechnet, überprüfen Sie bitte das Ergebniss.</small>
               </div>
+            </div>
+            <div class="row">
+                <label for="vorträge" style="font-weight: normal; display: box;">Wie viele Vorträge müssen erbracht werden: </label>
+                <input id="vorträge" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="10" v-model="vorträge">
               </div>
             <div class="row">
               <button class="button" @click="changeP">Speichern</button>
           </div>
         </div>
       </transition>
+
+
     </div>
     <table class="tasks">
       <thead>
@@ -71,10 +81,10 @@
             <b>{{ gesPoints }}</b><span>/</span><b>{{ gesMaxPoints }}</b>
           </td>
           <td style="text-align: center">
-            <b>{{ gesPres }}</b>
+            <b>{{ gesPres }}</b><span> /</span><b style="opacity:0.7; margin-left:3px;">{{ pres }}</b>
           </td>
           <td>
-            <b style="margin-right:3px;">{{ gesPerc }}</b><span>/</span><b style="opacity:0.7; margin-left:3px;">{{ perc }}</b>
+            <b style="margin-right:3px;">{{ gesPerc }}</b><span>/</span><b style="opacity:0.7; margin-left:3px;">{{ perc }}%</b>
           </td>
         </tr>
       </tbody>
@@ -119,10 +129,12 @@ export default {
       course: this.$route.params.course,
       settings: false,
       percent: 70,
-      perc: "70%",
+      perc: "-",
+      pres: 0,
       showPoints: false,
       von: 100,
       zuErreichen: 70,
+      vorträge: 1
     };
   },
   created() {
@@ -136,6 +148,8 @@ export default {
       .then(res => {
         this.gridData = res.body || [];
       });
+    api.GET("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.perc = res.body.percentage  || "-"; });
+    api.GET("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.pres = res.body.presentations  || "-"; });
   },
   methods: {
     addTask: async function() {
@@ -198,14 +212,21 @@ export default {
         id: 0
       };
     },
-    changeP: function() {
-      if (this.showPoints){
-        this.perc = Math.round((parseInt(this.von) > 0 ? parseInt(this.zuErreichen) / parseInt(this.von) * 100: 0)) + "%";
-      }else{
-        this.perc = parseInt(this.percent) + "%";
+    changeP: async function() {
+      if (this.showPoints) {
+        this.percent =
+          Math.round(
+            parseInt(this.von) > 0
+              ? parseInt(this.zuErreichen) / parseInt(this.von) * 100
+              : 0
+          ) + "%";
       }
-    },
-  },  
+      var res = await api.PUT("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course) + "/" + encodeURI(this.percent))
+      this.perc = parseInt(this.percent);
+      var res = await api.PUT("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course) + "/" + encodeURI(this.vorträge))
+      this.pres = parseInt(this.vorträge);
+    }
+  },
   computed: {
     gesPoints: function() {
       let res = 0;
@@ -288,9 +309,11 @@ h3 {
   height: 14px;
   margin-top: 5px;
   margin-left: 5px;
-  margin-right: 5px; 
+  margin-right: 5px;
 }
-.switch input {display:none;}
+.switch input {
+  display: none;
+}
 .slider {
   position: absolute;
   cursor: pointer;
@@ -299,8 +322,8 @@ h3 {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 34px;
 }
 .slider:before {
@@ -311,16 +334,16 @@ h3 {
   left: 2px;
   bottom: 2px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 50%;
 }
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {

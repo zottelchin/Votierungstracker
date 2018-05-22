@@ -21,6 +21,10 @@ func initDB(filepath string) *sql.DB {
 	statements["updateTask"] = mustPrepare(db, "UPDATE tasks SET name = ?, points = ?, maxPoints = ?, presentations = ? WHERE user = ? AND class = ? AND id = ?")
 	statements["deleteTask"] = mustPrepare(db, "DELETE FROM tasks WHERE user = ? AND class = ? AND id = ?")
 	statements["getCourses"] = mustPrepare(db, "SELECT class, user FROM tasks WHERE user = ? GROUP BY class")
+	statements["setPerc"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, ?, (SELECT presentations FROM limits WHERE class = ? and user = ?))")
+	statements["getPerc"] = mustPrepare(db, "SELECT percent FROM limits WHERE class = ? and user = ?")
+	statements["setPres"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, (SELECT percent FROM limits WHERE class = ? and user = ?), ?)")
+	statements["getPres"] = mustPrepare(db, "SELECT presentations FROM limits WHERE class = ? and user = ?")
 
 	return db
 }
@@ -35,13 +39,26 @@ func migrate(db *sql.DB) {
 		points INTEGER NOT NULL,
 		maxPoints INTEGER NOT NULL,
 		presentations INTEGER NOT NULL
-    );
-    `
+    );`
 
 	_, err := db.Exec(sql)
 	// Exit if something goes wrong with our SQL statement above
 	if err != nil {
 		panic(err)
+	}
+
+	sql2 := `
+	CREATE TABLE IF NOT EXISTS limits(
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		class VARCHAR NOT NULL,
+		user VARCHAR NOT NULL,
+		percent INTEGER,
+		presentations INTEGER 
+	);`
+
+	_, err2 := db.Exec(sql2)
+	if err2 != nil {
+		panic(err2)
 	}
 }
 

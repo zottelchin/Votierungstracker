@@ -31,6 +31,10 @@ func main() {
 	router.PUT("/api/tasks/:account/:course/:id", updateTask(db))
 	router.DELETE("/api/tasks/:account/:course/:id", deleteTask(db))
 	router.GET("/api/courses/:account", getCourses(db))
+	router.GET("/api/pres/:account/:course", getPres(db))
+	router.PUT("/api/pres/:account/:course/:presentations", setPres(db))
+	router.GET("/api/perc/:account/:course", getPerc(db))
+	router.PUT("/api/perc/:account/:course/:percentage", setPerc(db))
 
 	router.Group("/api", func(c *gin.Context) {
 		c.String(404, "API endpoint not found.\n")
@@ -120,5 +124,71 @@ func getCourses(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, resp)
+	}
+}
+
+func getPres(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["getPres"].Query(c.Param("course"), c.Param("account"))
+		assertNil(err)
+		defer result.Close()
+
+		resp := []int{}
+		for result.Next() {
+			line := tempStruct{}
+			err = result.Scan(&line.Perc)
+			assertNil(err)
+			resp = append(resp, line.Perc)
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"presentations": resp[0],
+		})
+	}
+}
+
+func getPerc(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["getPerc"].Query(c.Param("course"), c.Param("account"))
+		assertNil(err)
+		defer result.Close()
+
+		resp := []int{}
+		for result.Next() {
+			line := tempStruct{}
+			err = result.Scan(&line.Perc)
+			assertNil(err)
+			resp = append(resp, line.Perc)
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"percentage": resp[0],
+		})
+	}
+}
+
+func setPres(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("presentations"))
+		assertNil(err)
+
+		id, _ := result.RowsAffected()
+
+		c.JSON(http.StatusOK, gin.H{
+			"updated presentations": id,
+		})
+	}
+}
+
+func setPerc(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("percentage"), c.Param("course"), c.Param("account"))
+		assertNil(err)
+
+		id, _ := result.RowsAffected()
+
+		c.JSON(http.StatusOK, gin.H{
+			"updated percentage": id,
+		})
 	}
 }

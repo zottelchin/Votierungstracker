@@ -19,6 +19,10 @@ type UserLine struct {
 	Account string `json:"account"`
 }
 
+type tempStruct struct {
+	Perc int `json:"percentage"`
+}
+
 func assertNil(x interface{}) {
 	if x != nil {
 		panic(x)
