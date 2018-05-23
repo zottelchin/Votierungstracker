@@ -32,9 +32,9 @@ func main() {
 	router.DELETE("/api/tasks/:account/:course/:id", deleteTask(db))
 	router.GET("/api/courses/:account", getCourses(db))
 	router.GET("/api/pres/:account/:course", getPres(db))
-	router.PUT("/api/pres/:account/:course/:presentations", setPres(db))
+	router.PUT("/api/pres/:account/:course", setPres(db))
 	router.GET("/api/perc/:account/:course", getPerc(db))
-	router.PUT("/api/perc/:account/:course/:percentage", setPerc(db))
+	router.PUT("/api/perc/:account/:course", setPerc(db))
 
 	router.Group("/api", func(c *gin.Context) {
 		c.String(404, "API endpoint not found.\n")
@@ -135,10 +135,10 @@ func getPres(db *sql.DB) gin.HandlerFunc {
 
 		resp := []int{}
 		for result.Next() {
-			line := tempStruct{}
-			err = result.Scan(&line.Perc)
+			line := presStruct{}
+			err = result.Scan(&line.Pres)
 			assertNil(err)
-			resp = append(resp, line.Perc)
+			resp = append(resp, line.Pres)
 		}
 
 		c.JSON(http.StatusOK, gin.H{
@@ -155,7 +155,7 @@ func getPerc(db *sql.DB) gin.HandlerFunc {
 
 		resp := []int{}
 		for result.Next() {
-			line := tempStruct{}
+			line := percStruct{}
 			err = result.Scan(&line.Perc)
 			assertNil(err)
 			resp = append(resp, line.Perc)
@@ -169,7 +169,10 @@ func getPerc(db *sql.DB) gin.HandlerFunc {
 
 func setPres(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("presentations"))
+		pres := presStruct{}
+		err := c.BindJSON(&pres)
+		assertNil(err)
+		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), pres.Pres)
 		assertNil(err)
 
 		id, _ := result.RowsAffected()
@@ -182,7 +185,10 @@ func setPres(db *sql.DB) gin.HandlerFunc {
 
 func setPerc(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("percentage"), c.Param("course"), c.Param("account"))
+		perc := percStruct{}
+		err := c.BindJSON(&perc)
+		assertNil(err)
+		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), perc.Perc, c.Param("course"), c.Param("account"))
 		assertNil(err)
 
 		id, _ := result.RowsAffected()

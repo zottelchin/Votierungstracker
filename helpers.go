@@ -19,8 +19,12 @@ type UserLine struct {
 	Account string `json:"account"`
 }
 
-type tempStruct struct {
+type percStruct struct {
 	Perc int `json:"percentage"`
+}
+
+type presStruct struct {
+	Pres int `json:"presentations"`
 }
 
 func assertNil(x interface{}) {

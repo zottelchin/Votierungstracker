@@ -221,9 +221,9 @@ export default {
               : 0
           ) + "%";
       }
-      var res = await api.PUT("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course) + "/" + encodeURI(this.percent))
+      var res = await api.PUT("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course), {'percentage': parseInt(this.percent)})
       this.perc = parseInt(this.percent);
-      var res = await api.PUT("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course) + "/" + encodeURI(this.vorträge))
+      var res = await api.PUT("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course), {'presentations': parseInt(this.vorträge)})
       this.pres = parseInt(this.vorträge);
     }
   },
