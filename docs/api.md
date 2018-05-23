@@ -66,3 +66,47 @@ Get the courses of a specified user.
   …
 ]
 ```
+
+## GET /api/pres/:account/:course
+Get number of times a user have to present in a given course.
+
+### Response body
+```
+{"presentations": 1}
+```
+
+## PUT /api/pres/:account/:course
+Set number of times a user have to present in a given course.
+
+### Request Body
+```
+{"presentations": 1}
+```
+
+### Response Body
+```
+{"updated presentations":1}
+```
+ The number provided by the response is the affected row in the database.
+
+ ## GET /api/perc/:account/:course
+Get the percentage of subtasks a user has to do in one course.
+
+### Response body
+```
+{"percentage": 1}
+```
+
+## PUT /api/perc/:account/:course
+Set the percentage of subtasks a user has to do in one course.
+
+### Request Body
+```
+{"percentage": 1}
+```
+
+### Response Body
+```
+{"updated percentage":1}
+```
+ The number provided by the response is the affected row in the database.
