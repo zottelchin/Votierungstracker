@@ -4,7 +4,7 @@
     <ul class="course-list">
       <small v-if="!courses || !courses.length">Du hast noch keine Kurse angelegt.</small>
       <li v-else v-for="course in courses">
-        <router-link class="button button-outline" :to="getLink(course)">{{ course }}</router-link>
+        <router-link class="button button-outline" :to="getLink(course.course)">{{ course.course }} <small style="padding-left: 4em;" v-show="course.show">{{ course.actualPercent }}% von {{ course.Percent }}%</small></router-link>
       </li>
     </ul>
     <label for="newCourse">Erstelle einen neuen Kurs:</label>

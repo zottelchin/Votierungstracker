@@ -20,7 +20,7 @@ func initDB(filepath string) *sql.DB {
 	statements["addTask"] = mustPrepare(db, "INSERT INTO tasks(user, class, name, points, maxPoints, presentations) VALUES(?, ?, ?, ?, ?, ?)")
 	statements["updateTask"] = mustPrepare(db, "UPDATE tasks SET name = ?, points = ?, maxPoints = ?, presentations = ? WHERE user = ? AND class = ? AND id = ?")
 	statements["deleteTask"] = mustPrepare(db, "DELETE FROM tasks WHERE user = ? AND class = ? AND id = ?")
-	statements["getCourses"] = mustPrepare(db, "SELECT class, user FROM tasks WHERE user = ? GROUP BY class")
+	statements["getCourses"] = mustPrepare(db, "SELECT tasks.class, tasks.user, SUM(tasks.points), SUM(tasks.maxPoints), limits.percent FROM tasks left JOIN limits ON tasks.user = limits.user and tasks.class = limits.class WHERE tasks.user = ? GROUP BY tasks.class")
 	statements["setPerc"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, ?, (SELECT presentations FROM limits WHERE class = ? and user = ?))")
 	statements["getPerc"] = mustPrepare(db, "SELECT percent FROM limits WHERE class = ? and user = ?")
 	statements["setPres"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, (SELECT percent FROM limits WHERE class = ? and user = ?), ?)")

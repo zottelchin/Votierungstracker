@@ -114,13 +114,19 @@ func getCourses(db *sql.DB) gin.HandlerFunc {
 		assertNil(err)
 		defer result.Close()
 
-		resp := []string{}
+		resp := []UserLineArr{}
 		for result.Next() {
 			line := UserLine{}
-			err = result.Scan(&line.Course, &line.Account)
+			err = result.Scan(&line.Course, &line.Account, &line.Points, &line.MaxPoints, &line.Per)
 			assertNil(err)
 
-			resp = append(resp, line.Course)
+			resultLine := UserLineArr{}
+			resultLine.Course = line.Course
+			resultLine.AccPerc = 100 * line.Points / line.MaxPoints
+			resultLine.Per = int(line.Per.Int64)
+			resultLine.Show = line.Per.Valid
+
+			resp = append(resp, resultLine)
 		}
 
 		c.JSON(http.StatusOK, resp)
