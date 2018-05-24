@@ -139,16 +139,18 @@ func getPres(db *sql.DB) gin.HandlerFunc {
 		assertNil(err)
 		defer result.Close()
 
-		resp := []int{}
+		var resp int
 		for result.Next() {
 			line := presStruct{}
 			err = result.Scan(&line.Pres)
 			assertNil(err)
-			resp = append(resp, line.Pres)
+			if line.Pres.Valid {
+				resp = int(line.Pres.Int64)
+			}
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"presentations": resp[0],
+			"presentations": resp,
 		})
 	}
 }
@@ -159,16 +161,19 @@ func getPerc(db *sql.DB) gin.HandlerFunc {
 		assertNil(err)
 		defer result.Close()
 
-		resp := []int{}
+		var resp int
 		for result.Next() {
 			line := percStruct{}
 			err = result.Scan(&line.Perc)
 			assertNil(err)
-			resp = append(resp, line.Perc)
+			if line.Perc.Valid {
+				resp = int(line.Perc.Int64)
+			}
+
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"percentage": resp[0],
+			"percentage": resp,
 		})
 	}
 }

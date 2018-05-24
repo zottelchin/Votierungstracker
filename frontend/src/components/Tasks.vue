@@ -273,20 +273,17 @@ export default {
   justify-content: center;
 }
 .grow-enter-active {
-  animation: grow-up 0.9s;
+  animation: grow-up 2s;
 }
 .fade-leave-active {
-  animation: grow-up 0.5s reverse;
+  animation: grow-up 1s reverse;
 }
 @keyframes grow-up {
   0% {
-    transform: scaleY(0);
-  }
-  75% {
-    transform: scaleY(0, 85);
+    max-height: 0px;
   }
   100% {
-    transform: scaleY(1);
+    max-height: 350px;
   }
 }
 .settings {

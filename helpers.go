@@ -31,11 +31,11 @@ type UserLineArr struct {
 }
 
 type percStruct struct {
-	Perc int `json:"percentage"`
+	Perc sql.NullInt64 `json:"percentage"`
 }
 
 type presStruct struct {
-	Pres int `json:"presentations"`
+	Pres sql.NullInt64 `json:"presentations"`
 }
 
 func assertNil(x interface{}) {
