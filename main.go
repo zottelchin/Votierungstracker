@@ -122,7 +122,11 @@ func getCourses(db *sql.DB) gin.HandlerFunc {
 
 			resultLine := UserLineArr{}
 			resultLine.Course = line.Course
-			resultLine.AccPerc = 100 * line.Points / line.MaxPoints
+			if line.MaxPoints > 0 {
+				resultLine.AccPerc = 100 * line.Points / line.MaxPoints
+			} else {
+				resultLine.AccPerc = 0
+			}
 			resultLine.Per = int(line.Per.Int64)
 			resultLine.Show = line.Per.Valid
 
