@@ -31,6 +31,10 @@ func main() {
 	router.PUT("/api/tasks/:account/:course/:id", updateTask(db))
 	router.DELETE("/api/tasks/:account/:course/:id", deleteTask(db))
 	router.GET("/api/courses/:account", getCourses(db))
+	router.GET("/api/pres/:account/:course", getPres(db))
+	router.PUT("/api/pres/:account/:course", setPres(db))
+	router.GET("/api/perc/:account/:course", getPerc(db))
+	router.PUT("/api/perc/:account/:course", setPerc(db))
 
 	router.Group("/api", func(c *gin.Context) {
 		c.String(404, "API endpoint not found.\n")
@@ -110,15 +114,102 @@ func getCourses(db *sql.DB) gin.HandlerFunc {
 		assertNil(err)
 		defer result.Close()
 
-		resp := []string{}
+		resp := []UserLineArr{}
 		for result.Next() {
 			line := UserLine{}
-			err = result.Scan(&line.Course, &line.Account)
+			err = result.Scan(&line.Course, &line.Account, &line.Points, &line.MaxPoints, &line.Per)
 			assertNil(err)
 
-			resp = append(resp, line.Course)
+			resultLine := UserLineArr{}
+			resultLine.Course = line.Course
+			if line.MaxPoints > 0 {
+				resultLine.AccPerc = 100 * line.Points / line.MaxPoints
+			} else {
+				resultLine.AccPerc = 0
+			}
+			resultLine.Per = int(line.Per.Int64)
+			resultLine.Show = line.Per.Valid
+
+			resp = append(resp, resultLine)
 		}
 
 		c.JSON(http.StatusOK, resp)
+	}
+}
+
+func getPres(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["getPres"].Query(c.Param("course"), c.Param("account"))
+		assertNil(err)
+		defer result.Close()
+
+		var resp int
+		for result.Next() {
+			line := presStruct{}
+			err = result.Scan(&line.Pres)
+			assertNil(err)
+			if line.Pres.Valid {
+				resp = int(line.Pres.Int64)
+			}
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"presentations": resp,
+		})
+	}
+}
+
+func getPerc(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		result, err := statements["getPerc"].Query(c.Param("course"), c.Param("account"))
+		assertNil(err)
+		defer result.Close()
+
+		var resp int
+		for result.Next() {
+			line := percStruct{}
+			err = result.Scan(&line.Perc)
+			assertNil(err)
+			if line.Perc.Valid {
+				resp = int(line.Perc.Int64)
+			}
+
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"percentage": resp,
+		})
+	}
+}
+
+func setPres(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		pres := presStruct{}
+		err := c.BindJSON(&pres)
+		assertNil(err)
+		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), pres.Pres)
+		assertNil(err)
+
+		id, _ := result.RowsAffected()
+
+		c.JSON(http.StatusOK, gin.H{
+			"updated presentations": id,
+		})
+	}
+}
+
+func setPerc(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		perc := percStruct{}
+		err := c.BindJSON(&perc)
+		assertNil(err)
+		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), perc.Perc, c.Param("course"), c.Param("account"))
+		assertNil(err)
+
+		id, _ := result.RowsAffected()
+
+		c.JSON(http.StatusOK, gin.H{
+			"updated percentage": id,
+		})
 	}
 }

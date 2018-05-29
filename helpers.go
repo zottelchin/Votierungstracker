@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"regexp"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +16,26 @@ type GridLine struct {
 }
 
 type UserLine struct {
+	Course    string        `json:"course"`
+	Account   string        `json:"account"`
+	Points    int           `json:"Points"`
+	MaxPoints int           `json:"maxPoints"`
+	Per       sql.NullInt64 `json:"Percent"`
+}
+
+type UserLineArr struct {
 	Course  string `json:"course"`
-	Account string `json:"account"`
+	AccPerc int    `json:"actualPercent"`
+	Per     int    `json:"Percent"`
+	Show    bool   `json:"show"`
+}
+
+type percStruct struct {
+	Perc sql.NullInt64 `json:"percentage"`
+}
+
+type presStruct struct {
+	Pres sql.NullInt64 `json:"presentations"`
 }
 
 func assertNil(x interface{}) {

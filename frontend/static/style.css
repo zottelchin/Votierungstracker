@@ -105,7 +105,7 @@ body {
         text-align: right;
     }
     div[disabled] { opacity: 0.5; }
-    .back { padding-left: 1rem; font-weight: bold; margin-bottom: 1em; }
+    .back { padding-left: 1rem; font-weight: bold; margin-bottom: 1em; padding-right: 1rem}
     .submit-button { padding-left: 1.2rem; padding-right: 1.2rem; width: 11rem; }
 
     .row .column.column-17 {
