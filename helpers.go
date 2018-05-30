@@ -34,8 +34,16 @@ type percStruct struct {
 	Perc sql.NullInt64 `json:"percentage"`
 }
 
+type percSetStruct struct {
+	Perc int `json:"percentage"`
+}
+
 type presStruct struct {
 	Pres sql.NullInt64 `json:"presentations"`
+}
+
+type presSetStruct struct {
+	Pres int `json:"presentations"`
 }
 
 func assertNil(x interface{}) {

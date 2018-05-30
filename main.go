@@ -184,7 +184,7 @@ func getPerc(db *sql.DB) gin.HandlerFunc {
 
 func setPres(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		pres := presStruct{}
+		pres := presSetStruct{}
 		err := c.BindJSON(&pres)
 		assertNil(err)
 		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), pres.Pres)
@@ -200,7 +200,7 @@ func setPres(db *sql.DB) gin.HandlerFunc {
 
 func setPerc(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		perc := percStruct{}
+		perc := percSetStruct{}
 		err := c.BindJSON(&perc)
 		assertNil(err)
 		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), perc.Perc, c.Param("course"), c.Param("account"))
