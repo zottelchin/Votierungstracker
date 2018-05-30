@@ -16,6 +16,8 @@ func initDB(filepath string) *sql.DB {
 		panic(err)
 	}
 
+	migrate(db)
+
 	statements["getTasks"] = mustPrepare(db, "SELECT id, name, points, maxPoints, presentations FROM tasks WHERE user = ? AND class = ?")
 	statements["addTask"] = mustPrepare(db, "INSERT INTO tasks(user, class, name, points, maxPoints, presentations) VALUES(?, ?, ?, ?, ?, ?)")
 	statements["updateTask"] = mustPrepare(db, "UPDATE tasks SET name = ?, points = ?, maxPoints = ?, presentations = ? WHERE user = ? AND class = ? AND id = ?")

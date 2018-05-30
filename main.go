@@ -13,7 +13,7 @@ import (
 func main() {
 
 	db := initDB("db/storage.db")
-	migrate(db)
+
 	router := gin.Default()
 
 	if gin.Mode() != "release" {
