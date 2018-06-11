@@ -24,6 +24,7 @@ pipeline:
       branch: master
   load dev Server:
     image: plugins/webhook
+    secrets: [ gook_path, gook_key ]
     urls:
     - https://hook.zottelchin.de/$GOOK_PATH/$GOOK_KEY
     
