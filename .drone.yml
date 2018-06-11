@@ -23,7 +23,7 @@ pipeline:
     when:
       branch: master
   load dev Server:
-    webhook:
-      urls:
-      - https://hook.zottelchin.de/$GOOK_PATH/$GOOK_KEY
+    image: plugins/webhook
+    urls:
+    - https://hook.zottelchin.de/$GOOK_PATH/$GOOK_KEY
     
