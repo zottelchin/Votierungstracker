@@ -22,3 +22,8 @@ pipeline:
     secrets: [ docker_username, docker_password ]
     when:
       branch: master
+  load dev Server:
+    webhook:
+      urls:
+      - https://hook.zottelchin.de/$GOOK_PATH/$GOOK_KEY
+    
