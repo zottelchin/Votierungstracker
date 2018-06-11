@@ -92,24 +92,24 @@
     <fieldset class="row">
       <div class="column full" style="flex-grow: 2">
         <label for="Aufgabe">Aufgabe</label>
-        <input id="Aufgabe" type="text" v-model="editData.name" v-on:keyup.enter="setFocus('punkte')">
+        <input id="Aufgabe" class="aniInput" type="text" v-model="editData.name" v-on:keyup.enter="setFocus('punkte')">
       </div>
       <div class="column column-17">
         <label for="punkte">Punkte</label>
-        <input id="punkte" type="number" v-model.number="editData.points" v-on:keyup.enter="setFocus('maxPoints')">
+        <input id="punkte" class="aniInput" type="number" v-model.number="editData.points" v-on:keyup.enter="setFocus('maxPoints')">
       </div>
       <div class="column column-17">
         <label for="maxPoints">max.&nbsp;Punkte</label>
-        <input id="maxPoints" type="number" v-model.number="editData.maxPoints" v-on:keyup.enter="enter()">
+        <input id="maxPoints" class="aniInput" type="number" v-model.number="editData.maxPoints" v-on:keyup.enter="enter()">
       </div>
       <div class="column column-17 full">
         <label for="pres">Vortr&auml;ge</label>
-        <input id="pres" type="number" v-model.number="editData.presentations" v-on:keyup.enter="enter()">
+        <input id="pres" type="number" class="aniInput" v-model.number="editData.presentations" v-on:keyup.enter="enter()">
       </div>
       <div class="column full" style="flex: 0 0 11rem">
         <label>&nbsp;</label>
-        <button class="button submit-button" type="button" @click="addTask()" v-if="isNew">Hinzufügen</button>
-        <button class="button submit-button" type="button" @click="saveEditTask()" v-else>Speichern</button>
+        <button class="button submit-button aniInput" type="button" @click="addTask()" v-if="isNew">Hinzufügen</button>
+        <button class="button submit-button aniInput" type="button" @click="saveEditTask()" v-else>Speichern</button>
       </div>
     </fieldset>
   </div>
@@ -185,6 +185,7 @@ export default {
       );
     },
     edit: function(row) {
+      document.getElementsByClassName("aniInput").forEach(function(element){element.classList.add("animated flash")})
       this.isNew = false;
       for (let i in this.editData) this.editData[i] = row[i];
     },
