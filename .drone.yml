@@ -27,3 +27,9 @@ pipeline:
     secrets: [ webhook_urls ]
     when:
       branch: master
+  deploy Dev:
+    image: plugins/webhook
+    secrets:
+      - source: webhook_dev_url
+        target: webhook_urls
+    
