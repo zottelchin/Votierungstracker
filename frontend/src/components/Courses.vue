@@ -16,8 +16,17 @@
         <button class="slim-button" @click="addCourse">Erstellen</button>
       </div>
     </div>
-    <p v-if="remembered">Du bist auf diesem Computer dauerhaft angemeldet. <a href="/" onclick="localStorage.removeItem('account')">Abmelden</a></p>
-    <p v-else><strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.</p>
+    <hr>
+    <p style="margin-bottom: 0"><strong>Dein Account-Key:</strong> <code>{{account}}</code></p>
+    <p v-if="remembered">
+      Du bist auf diesem Computer dauerhaft angemeldet.<br>
+      <a href="/" onclick="localStorage.removeItem('account')"><span class="square-icon"><i class="fa fa-sign-out-alt"></i></span> <strong>Abmelden</strong></a>
+    </p>
+    <p v-else>
+      <strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.<br>
+      <a href="#" onclick="localStorage.setItem('account', app.account); return false" @click="remembered = true"><span class="square-icon"><i class="fa fa-sign-in-alt"></i></span> Auf diesem Computer dauerhaft angemeldet bleiben</a><br>
+      <a href="/"><span class="square-icon"><i class="fa fa-users"></i></span> Account wechseln</a>
+    </p>
   </div>
 </template>
 

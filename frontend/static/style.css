@@ -144,3 +144,4 @@ body {
   .clickable-icon:hover, .clickable-icon:focus {
     color: #606c76;
   }
+.square-icon { display: inline-block; text-align: center; width: 1.3em; }

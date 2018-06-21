@@ -5,18 +5,23 @@
         <h2>Neuen Account erstellen</h2>
         <label for="userNew">Dein neuer Account-Key:</label>
         <input type="text" id="userNew" readonly v-model.trim="accountNew">
-        <label><input type="checkbox" v-model="rememberNew"> Auf diesem Computer merken</label>
         <button style="width: 100%" @click="login(accountNew)">Account anlegen</button>
-        <p>Schreibe dir den Account-Key am besten auf - du benötigst ihn, um von einem anderen Gerät oder ohne Lesezeichen auf deinen Account zuzugreifen.</p>
+        <p>Schreibe dir den Account-Key am besten auf - du benötigst ihn, um von einem anderen Gerät auf deinen Account zuzugreifen.</p>
       </div>
       <div class="column">
         <h2>Bestehenden Account verwenden</h2>
         <label for="user">Dein Account-Key:</label>
         <input type="text" id="user" v-model.trim="account" v-on:keyup.enter="login(account)">
-        <label><input type="checkbox" v-model="remember"> Auf diesem Computer merken</label>
         <button style="width: 100%" @click="login(account)">Account verwenden</button>
       </div>
     </div>
+    <div class="row"><div class="column">
+      <hr>
+      <label>
+        <input type="checkbox" v-model="remember"> Login-Daten auf diesem Computer merken<br>
+        <span style="font-weight: normal">Wenn du dies deaktivierst oder wenn dein Browser regelmäßig Cookies löscht, kommst du jedes Mal nur mit deinem Account-Key oder per Lesezeichen auf deine Votierungen.</span>
+      </label>
+    </div></div>
   </div>
 </template>
 <script>
@@ -29,14 +34,13 @@
       return {
         account: "",
         accountNew: generateUsername(),
-        remember: true,
-        rememberNew: true
+        remember: true
       }
     },
     methods: {
-      login(account, isNew) {
+      login(account) {
         account = account.replace(/ /g, "-");
-        if ((isNew && this.rememberNew) || (!isNew && this.remember)) localStorage.setItem("account", account);
+        if (this.remember) localStorage.setItem("account", account);
         this.$router.push("/" + encodeURIComponent(account));
       }
     }
