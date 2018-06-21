@@ -16,7 +16,8 @@
         <button class="slim-button" @click="addCourse">Erstellen</button>
       </div>
     </div>
-    <p><strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.</p>
+    <p v-if="remembered">Du bist auf diesem Computer dauerhaft angemeldet. <a href="/" onclick="localStorage.removeItem('account')">Abmelden</a></p>
+    <p v-else><strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.</p>
   </div>
 </template>
 
@@ -29,6 +30,7 @@
         account: this.$route.params.account,
         courses: [],
         coursename: "",
+        remembered: !!localStorage.getItem("account")
       }
     },
     methods: {
