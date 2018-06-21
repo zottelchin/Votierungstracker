@@ -22,13 +22,13 @@ func initDB(filepath string) *sql.DB {
 	statements["addTask"] = mustPrepare(db, "INSERT INTO tasks(user, class, name, points, maxPoints, presentations) VALUES(?, ?, ?, ?, ?, ?)")
 	statements["updateTask"] = mustPrepare(db, "UPDATE tasks SET name = ?, points = ?, maxPoints = ?, presentations = ? WHERE user = ? AND class = ? AND id = ?")
 	statements["deleteTask"] = mustPrepare(db, "DELETE FROM tasks WHERE user = ? AND class = ? AND id = ?")
-	statements["getCourses"] = mustPrepare(db, "SELECT tasks.class, tasks.user, SUM(tasks.points), SUM(tasks.maxPoints), limits.percent FROM tasks left JOIN limits ON tasks.user = limits.user and tasks.class = limits.class WHERE tasks.user = ? GROUP BY tasks.class")
-	statements["setPerc"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, ?, (SELECT presentations FROM limits WHERE class = ? and user = ?))")
-	statements["getPerc"] = mustPrepare(db, "SELECT percent FROM limits WHERE class = ? and user = ?")
-	statements["setPres"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, (SELECT percent FROM limits WHERE class = ? and user = ?), ?)")
-  statements["getPres"] = mustPrepare(db, "SELECT presentations FROM limits WHERE class = ? and user = ?")
+	statements["getCourses"] = mustPrepare(db, "SELECT tasks.class, tasks.user, SUM(tasks.points), SUM(tasks.maxPoints), limits.minimum, limits.minimumType FROM tasks left JOIN limits ON tasks.user = limits.user and tasks.class = limits.class WHERE tasks.user = ? GROUP BY tasks.class")
+	statements["setPerc"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, minimum, minimumType, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, ?, ?, (SELECT presentations FROM limits WHERE class = ? and user = ?))")
+	statements["getPerc"] = mustPrepare(db, "SELECT minimum, minimumType FROM limits WHERE class = ? and user = ?")
+	statements["setPres"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, minimum, minimumType, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, (SELECT minimum FROM limits WHERE class = ? and user = ?), (SELECT minimumType FROM limits WHERE class = ? and user = ?), ?)")
+	statements["getPres"] = mustPrepare(db, "SELECT presentations FROM limits WHERE class = ? and user = ?")
   statements["delCourse"] = mustPrepare(db, "DELETE FROM tasks WHERE user = ? AND class = ?")
-  statements["delLimits"] = mustPrepare(db, "DELETE FROM limits WHERE user = ? AND class = ?")
+	statements["delLimits"] = mustPrepare(db, "DELETE FROM limits WHERE user = ? AND class = ?")
 
 	return db
 }
@@ -56,14 +56,17 @@ func migrate(db *sql.DB) {
 		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		class VARCHAR NOT NULL,
 		user VARCHAR NOT NULL,
-		percent INTEGER,
-		presentations INTEGER 
+    minimum INTEGER NOT NULL DEFAULT 0,
+    minimumType VARCHAR(32) NOT NULL DEFAULT 'none',
+		presentations INTEGER NOT NULL DEFAULT 0
 	);`
 
 	_, err2 := db.Exec(sql2)
 	if err2 != nil {
 		panic(err2)
 	}
+
+	// TODO: Use goose (https://bitbucket.org/liamstask/goose) for migrations
 }
 
 func mustPrepare(db *sql.DB, sql string) *sql.Stmt {

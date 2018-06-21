@@ -1,50 +1,39 @@
 <template>
   <div id="wrapper" class="container">
     <div class="back">
+      <router-link :to="'/'+encodeURIComponent(account)" class="back-button"><i class="fa fa-chevron-left square-icon"></i> Zurück zu meinen Kursen</router-link>
       <div class="course">
-        <span><!--aktueller Kurs:--> <b>{{ course }}</b></span>
+        <span><!--aktueller Kurs:--><i class="fa fa-book"></i> <b>{{ course }}</b></span>
+        <i class="settings-button fas fa-cog" @click="toggleSettings()"></i>
       </div>
-      <router-link :to="'/'+encodeURIComponent(account)"><i class="fa fa-chevron-left"></i> Zurück zu meinen Kursen</router-link>
-      <i class="fas fa-cog right" @click="settings = !settings"></i>
 
 
-      <transition name="grow">
-        <div v-show="settings" class="container settings">
-          
-          <div class="row">
-            <h3>Einstellungen</h3>
-          </div>
-          <div class="row">
-            <span>Prozent </span>  
-              <label class="switch">
-                  <input type="checkbox" v-model="showPoints">
-                  <span class="slider round"></span>
-                </label>
-                <span>Punkte</span>
-          </div>
-          <div class="row">
-
-              <div v-show="!showPoints">
-                <label for="Prozent" style="font-weight: normal; display: inline;">mindestens zu erreichende Prozent: </label>
-                <input id="Prozent" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100"  v-model="percent">
-              </div>
-              <div v-show="showPoints">
-                <label for="zuErreichen" style="font-weight: normal; display: inline;">mindestens zu erreichende Punkte: </label>
-                <input id="zuErreichen" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="zuErreichen">
-                <label for="von" style="font-weight: normal; display: inline;">/</label>
-                <input id="von" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" v-model="von"><br>
-                <small >Achtung: Die Punkte werden für das Backend und die Validierung in Prozent umgerechnet, überprüfen Sie bitte das Ergebniss.</small>
-              </div>
+      <div class="container settings" :class="{open: settingsOpen}">
+        <div class="row">
+          <h3><i class="fa fa-cog"></i> Einstellungen</h3>
+        </div>
+        <div class="row" style="margin-bottom: 0.5rem !important">
+            <div style="display: flex; align-items: center;">
+              <label style="font-weight: normal; margin-right: 1rem;">Benötigte&nbsp;Punkte:</label>
+              <input v-if="settings.minimumType == 'points'" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" step="1" v-model="settings.minimumPoints">
+              <input v-if="settings.minimumType == 'percent'" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="100" step="0.1" v-model="settings.minimumPercent">
+              <select v-model="settings.minimumType">
+                <option value="none">Keine</option>
+                <option value="percent">Prozent</option>
+                <option value="points">Punkte</option>
+              </select>
             </div>
-            <div class="row">
-                <label for="vorträge" style="font-weight: normal; display: box;">Wie viele Vorträge müssen erbracht werden: </label>
-                <input id="vorträge" type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="10" v-model="vorträge">
-              </div>
-            <div class="row">
-              <button class="button" @click="changeP">Speichern</button>
+        </div>
+        <div class="row">
+          <div style="display: flex; align-items: center;">
+            <label style="font-weight: normal; margin-right: 1rem;">Benötigte&nbsp;Vorträge:</label>
+            <input type="number" style="max-width: 65px; margin-left: 2px; display: inline;" min="0" max="10" v-model="settings.minimumPresentations">
           </div>
         </div>
-      </transition>
+        <div class="row" style="margin-top: 0.5rem !important; justify-content: flex-end">
+          <button class="button" @click="saveSettings()">Speichern</button>
+        </div>
+      </div>
 
 
     </div>
@@ -81,10 +70,10 @@
             <b>{{ gesPoints }}</b><span>/</span><b>{{ gesMaxPoints }}</b>
           </td>
           <td style="text-align: center">
-            <b>{{ gesPres }}</b><span> /</span><b style="opacity:0.7; margin-left:3px;">{{ pres }}</b>
+            <b>{{ gesPres }}</b><span v-if="minimumPresentations > 0"><span> /</span><b style="opacity:0.7; margin-left:3px;">{{ minimumPresentations }}</b></span>
           </td>
           <td>
-            <b style="margin-right:3px;">{{ gesPerc }}</b><span>/</span><b style="opacity:0.7; margin-left:3px;">{{ perc }}%</b>
+            <span v-if="minimumType != 'none'"><strong style="margin-right:3px;">{{ gesPerc }}</strong><span>/</span><strong style="opacity:0.7; margin-left:3px;">{{ minimumType == 'percent' ? minimumPercent + "%" : minimumPoints }}</strong></span>
           </td>
         </tr>
       </tbody>
@@ -127,14 +116,17 @@ export default {
       isNew: true,
       account: this.$route.params.account,
       course: this.$route.params.course,
-      settings: false,
-      percent: 70,
-      perc: "-",
-      pres: 0,
-      showPoints: false,
-      von: 100,
-      zuErreichen: 70,
-      vorträge: 1
+      minimumType: "none",
+      minimumPoints: 50,
+      minimumPercent: 50,
+      minimumPresentations: 1,
+      settingsOpen: false,
+      settings: {
+        minimumType: "none",
+        minimumPoints: 50,
+        minimumPercent: 50,
+        minimumPresentations: 1
+      }
     };
   },
   created() {
@@ -148,8 +140,8 @@ export default {
       .then(res => {
         this.gridData = res.body || [];
       });
-    api.GET("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.perc = res.body.percentage  || "-"; });
-    api.GET("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.pres = res.body.presentations  || "-"; });
+    api.GET("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.minimumType = res.body.type || "none"; this.minimumPoints = this.minimumType == "points" ? res.body.minimum : 50; this.minimumPercent = this.minimumType == "percent" ? res.body.minimum : 50; });
+    api.GET("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course)).then( res => { this.minimumPresentations = res.body.presentations || 0; });
   },
   methods: {
     addTask: async function() {
@@ -212,19 +204,22 @@ export default {
         id: 0
       };
     },
-    changeP: async function() {
-      if (this.showPoints) {
-        this.percent =
-          Math.round(
-            parseInt(this.von) > 0
-              ? parseInt(this.zuErreichen) / parseInt(this.von) * 100
-              : 0
-          ) + "%";
+    toggleSettings: function() {
+      this.settingsOpen = !this.settingsOpen;
+      if (this.settingsOpen) {
+        for (var i in this.settings) {
+          console.log("Setting:",i);
+          this.$set(this.settings, i, this[i]);
+        }
       }
-      var res = await api.PUT("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course), {'percentage': parseInt(this.percent)})
-      this.perc = parseInt(this.percent);
-      var res = await api.PUT("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course), {'presentations': parseInt(this.vorträge)})
-      this.pres = parseInt(this.vorträge);
+    },
+    saveSettings: async function() {
+      var res = await api.PUT("/perc/" + encodeURI(this.account) + "/" + encodeURI(this.course), { type: this.settings.minimumType, minimum: this.settings.minimumType == "percent" ? parseFloat(this.settings.minimumPercent) :  parseInt(this.settings.minimumPoints) })
+      this.minimumType = this.settings.minimumType;
+      this.minimumPercent = parseFloat(this.settings.minimumPercent);
+      this.minimumPoints = parseInt(this.settings.minimumPoints);
+      var res = await api.PUT("/pres/" + encodeURI(this.account) + "/" + encodeURI(this.course), { presentations: parseInt(this.settings.minimumPresentations) })
+      this.minimumPresentations = parseInt(this.settings.minimumPresentations);
     }
   },
   computed: {
@@ -250,6 +245,7 @@ export default {
       return res;
     },
     gesPerc: function() {
+      if (this.minimumType == "points") return this.gesPoints;
       return this.gesPoints
         ? Math.round(this.gesPoints / this.gesMaxPoints * 1000) / 10 + "%"
         : 0 + "%";
@@ -266,37 +262,36 @@ export default {
 }
 .course {
   width: 100%;
+  margin-top: 0.5rem;
   font-weight: normal;
-  font-size: 15pt;
-  padding-left: 13px;
-  display: flex;
-  justify-content: center;
+  font-size: 2.5rem;
+  display: flex; align-items: center;
 }
-.grow-enter-active {
-  animation: grow-up 2s;
-}
-.fade-leave-active {
-  animation: grow-up 1s reverse;
-}
-@keyframes grow-up {
-  0% {
-    max-height: 0px;
-  }
-  100% {
-    max-height: 350px;
-  }
-}
+.course>span>i { margin-right: 0.5rem; }
+.settings-button { margin-left: 1rem;  font-size: 1.5rem; color: #606c76; cursor: pointer; }
+.back-button { color: #606c76; }
+.settings-button:hover, .back-button:hover { color: #9b4dca; }
 .settings {
-  background-color: aliceblue;
-  border-radius: 7px;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  background-color: #eeeeee; border: 2px solid #bbb;
+  margin: 0 -1rem -30px; width: auto; overflow: hidden;
+  border-radius: 3px;
+  padding: 15px !important; box-sizing: border-box;
   font-weight: normal;
+  transition: max-height 0.4s, opacity 0.4s, margin-top 0.4s, margin-bottom 0.4s;
+  max-height: 0; opacity: 0;
 }
-h3 {
-  margin-bottom: 5px;
-  margin-left: 25px;
+.settings>.row { margin: 0 !important; width: 100%; }
+.open {
+  opacity: 1;
+  margin-top: 10px; margin-bottom: 0;
+  max-height: 350px;
 }
+.settings>h3 {
+  margin-bottom: 15px;
+}
+.settings input, .settings select { background-color: #fff !important; margin-bottom: 0; width: auto !important; }
+.settings label { margin-bottom: 0; display: inline-block !important; }
+.settings button { margin-bottom: 0; }
 
 /*Slider*/
 .switch {

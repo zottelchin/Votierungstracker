@@ -4,7 +4,10 @@
     <ul class="course-list">
       <small v-if="!courses || !courses.length">Du hast noch keine Kurse angelegt.</small>
       <li v-else v-for="course in courses">
-        <router-link class="button button-outline" :to="getLink(course.course)">{{ course.course }} <small style="padding-left: 4em;" v-show="course.show">{{ course.actualPercent }}% von {{ course.Percent }}%</small></router-link>
+        <router-link class="button button-outline courselink" :to="getLink(course.course)">
+          <strong>{{ course.course }}</strong>
+          <span style="font-weight: normal; margin-left: auto;" v-show="course.minimumType != 'none'">{{ course.actual.toFixed(course.minimumType == "percent" ? 1 : 0).replace(/\.0$/, "") + (course.minimumType == "percent" ? "%" : "") }} von {{ course.minimum + (course.minimumType == "percent" ? "%" : "") }}</span>
+        </router-link>
       </li>
     </ul>
     <label for="newCourse">Erstelle einen neuen Kurs:</label>
@@ -57,3 +60,15 @@
     }
   }
 </script>
+<style>
+  .courselink {
+    position: relative; display: flex !important; font: inherit; font-size: 1.2em; text-transform: none; padding: 0.5rem 1.5rem;
+    background: linear-gradient(180deg, rgba(253,251,255,1) 0%, rgba(248,246,249,1) 100%);
+  }
+  .course-list>li:not(:first-child)>.courselink { border-top-left-radius: 0; border-top-right-radius: 0; margin-top: -1px; }
+  .course-list>li:not(:last-child)>.courselink { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+  .courselink:hover, .courselink:active { z-index: 1000; }
+  .course-list>li, .courselink { margin-bottom: 0; }
+
+  /* TODO: mobile view: word wrap with long course names */
+</style>

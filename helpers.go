@@ -16,26 +16,24 @@ type GridLine struct {
 }
 
 type UserLine struct {
-	Course    string        `json:"course"`
-	Account   string        `json:"account"`
-	Points    int           `json:"Points"`
-	MaxPoints int           `json:"maxPoints"`
-	Per       sql.NullInt64 `json:"Percent"`
+	Course    string          `json:"course"`
+	Account   string          `json:"account"`
+	Points    int             `json:"Points"`
+	MaxPoints int             `json:"maxPoints"`
+	Min       sql.NullFloat64 `json:"minimum"`
+	MinType   sql.NullString  `json:"minimumType"`
 }
 
 type UserLineArr struct {
-	Course  string `json:"course"`
-	AccPerc int    `json:"actualPercent"`
-	Per     int    `json:"Percent"`
-	Show    bool   `json:"show"`
+	Course  string  `json:"course"`
+	AccPerc float64 `json:"actual"`
+	Min     float64 `json:"minimum"`
+	MinType string  `json:"minimumType"`
 }
 
 type percStruct struct {
-	Perc sql.NullInt64 `json:"percentage"`
-}
-
-type percSetStruct struct {
-	Perc int `json:"percentage"`
+	Type    string  `json:"type"`
+	Minimum float64 `json:"minimum"`
 }
 
 type presStruct struct {

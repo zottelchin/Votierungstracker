@@ -139,18 +139,26 @@ func getCourses(db *sql.DB) gin.HandlerFunc {
 		resp := []UserLineArr{}
 		for result.Next() {
 			line := UserLine{}
-			err = result.Scan(&line.Course, &line.Account, &line.Points, &line.MaxPoints, &line.Per)
+			err = result.Scan(&line.Course, &line.Account, &line.Points, &line.MaxPoints, &line.Min, &line.MinType)
 			assertNil(err)
 
 			resultLine := UserLineArr{}
 			resultLine.Course = line.Course
-			if line.MaxPoints > 0 {
-				resultLine.AccPerc = 100 * line.Points / line.MaxPoints
-			} else {
-				resultLine.AccPerc = 0
+			if line.MinType.Valid && line.MinType.String == "percent" {
+				if line.MaxPoints > 0 {
+					resultLine.AccPerc = float64(100*line.Points) / float64(line.MaxPoints)
+				} else {
+					resultLine.AccPerc = 0
+				}
 			}
-			resultLine.Per = int(line.Per.Int64)
-			resultLine.Show = line.Per.Valid
+			if line.MinType.Valid && line.MinType.String == "points" {
+				resultLine.AccPerc = float64(line.Points)
+			}
+			resultLine.Min = line.Min.Float64
+			resultLine.MinType = line.MinType.String
+			if resultLine.MinType == "" {
+				resultLine.MinType = "none"
+			}
 
 			resp = append(resp, resultLine)
 		}
@@ -187,20 +195,13 @@ func getPerc(db *sql.DB) gin.HandlerFunc {
 		assertNil(err)
 		defer result.Close()
 
-		var resp int
+		line := percStruct{}
 		for result.Next() {
-			line := percStruct{}
-			err = result.Scan(&line.Perc)
+			err = result.Scan(&line.Minimum, &line.Type)
 			assertNil(err)
-			if line.Perc.Valid {
-				resp = int(line.Perc.Int64)
-			}
-
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"percentage": resp,
-		})
+		c.JSON(http.StatusOK, line)
 	}
 }
 
@@ -209,7 +210,7 @@ func setPres(db *sql.DB) gin.HandlerFunc {
 		pres := presSetStruct{}
 		err := c.BindJSON(&pres)
 		assertNil(err)
-		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), pres.Pres)
+		result, err := statements["setPres"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), pres.Pres)
 		assertNil(err)
 
 		id, _ := result.RowsAffected()
@@ -222,10 +223,10 @@ func setPres(db *sql.DB) gin.HandlerFunc {
 
 func setPerc(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		perc := percSetStruct{}
+		perc := percStruct{}
 		err := c.BindJSON(&perc)
 		assertNil(err)
-		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), perc.Perc, c.Param("course"), c.Param("account"))
+		result, err := statements["setPerc"].Exec(c.Param("course"), c.Param("account"), c.Param("course"), c.Param("account"), perc.Minimum, perc.Type, c.Param("course"), c.Param("account"))
 		assertNil(err)
 
 		id, _ := result.RowsAffected()
