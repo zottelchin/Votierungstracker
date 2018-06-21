@@ -82,7 +82,7 @@
     margin: 0 !important; width: auto;
   }
   .footer .column {
-    padding: 0 0 1.5rem;
+    padding: 0 0 0.5rem;
   }
   .copyright {
     grid-column: span 2;
