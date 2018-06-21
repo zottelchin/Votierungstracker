@@ -26,7 +26,9 @@ func initDB(filepath string) *sql.DB {
 	statements["setPerc"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, ?, (SELECT presentations FROM limits WHERE class = ? and user = ?))")
 	statements["getPerc"] = mustPrepare(db, "SELECT percent FROM limits WHERE class = ? and user = ?")
 	statements["setPres"] = mustPrepare(db, "REPLACE INTO limits (id, class, user, percent, presentations) VALUES ((SELECT id FROM limits WHERE class = ? and user = ?), ?, ?, (SELECT percent FROM limits WHERE class = ? and user = ?), ?)")
-	statements["getPres"] = mustPrepare(db, "SELECT presentations FROM limits WHERE class = ? and user = ?")
+  statements["getPres"] = mustPrepare(db, "SELECT presentations FROM limits WHERE class = ? and user = ?")
+  statements["delCourse"] = mustPrepare(db, "DELETE FROM tasks WHERE user = ? AND class = ?")
+  statements["delLimits"] = mustPrepare(db, "DELETE FROM limits WHERE user = ? AND class = ?")
 
 	return db
 }

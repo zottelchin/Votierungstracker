@@ -110,3 +110,16 @@ Set the percentage of subtasks a user has to do in one course.
 {"updated percentage":1}
 ```
  The number provided by the response is the affected row in the database.
+
+ ## Delete /api/task/:account/:course
+ Delte the complete Course for the User
+
+ ### Response Body
+ ```
+ {
+    "Deleted Course": "ABC-Course",
+    "For User": "test",
+    "Number deleted Rows from Courses": 4,
+    "Number deleted Rows from Limits": 1
+}
+```
