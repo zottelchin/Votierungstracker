@@ -3,7 +3,7 @@
     <div class="back">
       <router-link :to="'/'+encodeURIComponent(account)" class="back-button"><i class="fa fa-chevron-left square-icon"></i> Zurück zu meinen Kursen</router-link>
       <div class="course">
-        <span><!--aktueller Kurs:--><i class="fa fa-book"></i> <b>{{ course }}</b></span>
+        <span><!--aktueller Kurs:--><!--<i class="fa fa-book"></i> --><b>{{ course }}</b></span>
         <i class="settings-button fas fa-cog" @click="toggleSettings()"></i>
       </div>
 
@@ -265,10 +265,10 @@ export default {
   margin-top: 0.5rem;
   font-weight: normal;
   font-size: 2.5rem;
-  display: flex; align-items: center;
+  display: flex;
 }
 .course>span>i { margin-right: 0.5rem; }
-.settings-button { margin-left: 1rem;  font-size: 1.5rem; color: #606c76; cursor: pointer; }
+.settings-button { margin-left: 1rem; margin-top: 1.15rem; font-size: 1.5rem; color: #606c76; cursor: pointer; }
 .back-button { color: #606c76; }
 .settings-button:hover, .back-button:hover { color: #9b4dca; }
 .settings {

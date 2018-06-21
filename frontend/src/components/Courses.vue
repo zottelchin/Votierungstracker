@@ -6,7 +6,7 @@
       <li v-else v-for="course in courses">
         <router-link class="button button-outline courselink" :to="getLink(course.course)">
           <strong>{{ course.course }}</strong>
-          <span style="font-weight: normal; margin-left: auto;" v-show="course.minimumType != 'none'">{{ course.actual.toFixed(course.minimumType == "percent" ? 1 : 0).replace(/\.0$/, "") + (course.minimumType == "percent" ? "%" : "") }} von {{ course.minimum + (course.minimumType == "percent" ? "%" : "") }}</span>
+          <span style="font-weight: normal; margin-left: auto;" v-show="course.minimumType != 'none'">{{ course.actual.toFixed(course.minimumType == "percent" ? 1 : 0).replace(/\.0$/, "") + (course.minimumType == "percent" ? "%" : "") }} von {{ course.minimum + (course.minimumType == "percent" ? "%" : " Punkten") }}</span>
         </router-link>
       </li>
     </ul>
@@ -62,9 +62,17 @@
 </script>
 <style>
   .courselink {
-    position: relative; display: flex !important; font: inherit; font-size: 1.2em; text-transform: none; padding: 0.5rem 1.5rem;
+    position: relative; display: flex !important; font: inherit; font-size: inherit; text-transform: none; padding: 0.6rem 1rem !important; align-items: center;
     background: linear-gradient(180deg, rgba(253,251,255,1) 0%, rgba(248,246,249,1) 100%);
+    letter-spacing: 0;
   }
+  .courselink>strong {
+    flex-shrink: 1; overflow: hidden; text-overflow: ellipsis;
+    font-size: 1.15em;
+    margin-right: 0.6rem;
+  }
+  .courselink>span { flex: none; font-size: 1.05em; }
+
   .course-list>li:not(:first-child)>.courselink { border-top-left-radius: 0; border-top-right-radius: 0; margin-top: -1px; }
   .course-list>li:not(:last-child)>.courselink { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
   .courselink:hover, .courselink:active { z-index: 1000; }
