@@ -27,7 +27,7 @@
     </p>
     <p v-else>
       <strong>Tipp:</strong> Setze dir ein Lesezeichen auf diese Seite, um nicht jedes Mal deinen Account-Key eingeben zu müssen.<br>
-      <a href="#" onclick="localStorage.setItem('account', app.account); return false" @click="remembered = true"><span class="square-icon"><i class="fa fa-sign-in-alt"></i></span> Auf diesem Computer dauerhaft angemeldet bleiben</a><br>
+      <a href="#" onclick="localStorage.setItem('account', app.$route.params.account); return false" @click="remembered = true"><span class="square-icon"><i class="fa fa-sign-in-alt"></i></span> Auf diesem Computer dauerhaft angemeldet bleiben</a><br>
       <a href="/"><span class="square-icon"><i class="fa fa-users"></i></span> Account wechseln</a>
     </p>
   </div>
