@@ -16,7 +16,7 @@ FROM node AS frontend-build-env
 RUN mkdir -p /frontend
 WORKDIR /frontend
 COPY frontend/ /frontend/
-RUN npm build
+RUN npm run build
 
 # Put everything together
 FROM scratch

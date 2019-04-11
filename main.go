@@ -34,8 +34,8 @@ func main() {
 	router.GET("/api/pres/:account/:course", getPres(db))
 	router.PUT("/api/pres/:account/:course", setPres(db))
 	router.GET("/api/perc/:account/:course", getPerc(db))
-  router.PUT("/api/perc/:account/:course", setPerc(db))
-  router.DELETE("/api/task/:account/:course", deleteCourse(db))
+	router.PUT("/api/perc/:account/:course", setPerc(db))
+	router.DELETE("/api/tasks/:account/:course", deleteCourse(db))
 
 	router.Group("/api", func(c *gin.Context) {
 		c.String(404, "API endpoint not found.\n")
@@ -46,24 +46,24 @@ func main() {
 }
 
 func deleteCourse(db *sql.DB) gin.HandlerFunc {
-  return func(c *gin.Context) {
-    resultL, err := statements["delLimits"].Exec(c.Param("account"), c.Param("course"))
-    fmt.Printf("Deleted for user %s limits for course %s \n", c.Param("account"), c.Param("course"))
-    assertNil(err)
+	return func(c *gin.Context) {
+		resultL, err := statements["delLimits"].Exec(c.Param("account"), c.Param("course"))
+		fmt.Printf("Deleted for user %s limits for course %s \n", c.Param("account"), c.Param("course"))
+		assertNil(err)
 
-    resultC, err := statements["delCourse"].Exec(c.Param("account"), c.Param("course"))
-    fmt.Printf("Deleted for user %s course %s\n", c.Param("account"), c.Param("course"))
-    assertNil(err)
+		resultC, err := statements["delCourse"].Exec(c.Param("account"), c.Param("course"))
+		fmt.Printf("Deleted for user %s course %s\n", c.Param("account"), c.Param("course"))
+		assertNil(err)
 
-    numC, _ := resultC.RowsAffected()
-    numL, _ := resultL.RowsAffected()
+		numC, _ := resultC.RowsAffected()
+		numL, _ := resultL.RowsAffected()
 		c.JSON(http.StatusOK, gin.H{
-      "Number deleted Rows from Courses": numC,
-      "Number deleted Rows from Limits": numL,
-      "Deleted Course": c.Param("course"),
-      "For User": c.Param("account"),
+			"Number deleted Rows from Courses": numC,
+			"Number deleted Rows from Limits":  numL,
+			"Deleted Course":                   c.Param("course"),
+			"For User":                         c.Param("account"),
 		})
-  }
+	}
 }
 
 func getTasks(db *sql.DB) gin.HandlerFunc {

@@ -5,6 +5,8 @@ import router from "./router"
 
 Vue.config.productionTip = false
 
+window.router = router;
+
 window.app = new Vue({
   el: "#app",
   router,
