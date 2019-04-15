@@ -495,5 +495,9 @@ input:checked + .slider:before {
   -ms-transform: translateX(16px);
   transform: translateX(16px);
 }
+
+td:not(:first-child) {
+  white-space: nowrap;
+}
 </style>
 
